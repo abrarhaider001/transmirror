@@ -1,0 +1,32 @@
+class AppRoutes {
+  static const splash = '/';
+  static const onBoarding = '/onboarding';
+  static const login = '/login';
+  static const register = '/register';
+  static const forgotPassword = '/forgot-password';
+  static const subscription = '/subscription';
+  static const pending = '/pending';
+  static const home = '/home';
+  static const cardInfo = '/cardInfo';
+  static const providerInfo = '/provider-info';
+  static const wallet = '/wallet';
+  static const deposit = '/deposit';
+  static const withdraw = '/withdraw';
+  static const depositCard = '/deposit-card';
+  static const available = '/available';
+  static const invite = '/invite';
+  static const orderStatus = '/order-status';
+  static const orderInfo = '/order-info';
+  static const invitationInfo = '/invitation-info';
+  static const newsEvents = '/news-events';
+  static const termsConditions = '/terms-conditions';
+  static const helpSupport = '/help-support';
+  static const privacyPolicy = '/privacy-policy';
+  static const favorites = '/favorites';
+  static const textNote = '/text-note';
+  static const textToSpeech = '/text-to-speech';
+  static const aiResponse = '/ai-response';
+  static const speechToText = '/speech-to-text';
+  static const createNote = '/create-note';
+  static const downloadModels = '/downloadModels';
+}

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "386381768273",
+    "project_id": "transmirror-8eedf",
+    "storage_bucket": "transmirror-8eedf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:386381768273:android:4b896caa1a8c55e0fd7a70",
+        "android_client_info": {
+          "package_name": "com.transmirror.main"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCEINbHZqo7iTmoXd4H5iXIPNSiJixogQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
