@@ -32,30 +32,14 @@ class LauncherShortcutService {
           localizedSubtitle: 'Localized Subtitle',
         ),
       ),
-      ShortcutItem(
-        type: 'show_overlay',
-        localizedTitle: 'Show Overlay',
-        androidConfig: AndroidConfig(icon: "assets/launcher/logo.png"),
-        iosConfig: IosConfig(
-          icon: 'logo',
-          localizedSubtitle: 'Localized Subtitle',
-        ),
-      ),
     ]);
   }
 
   // Call this when overlay state changes
   Future<void> updateOverlayShortcut({required bool isOverlayShowing}) async {
+    // Overlay functionality removed, no need to update shortcuts dynamically for it
     if (!areShortcutsEnabled) return;
-
-    if (isOverlayShowing) {
-      // User requested: "clear overlay shortcut and show a icon at the start and a text"
-      // Assuming this means clearing the "Show Overlay" shortcut.
-      // If a "Hide Overlay" shortcut or notification is needed, implement here.
-      await clearShortcuts();
-    } else {
-      await createShortcuts();
-    }
+    await createShortcuts();
   }
 
   Future<void> clearShortcuts() async {
