@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:launcher_shortcuts/launcher_shortcuts.dart';
@@ -11,7 +10,6 @@ import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/theme/theme.dart';
 import 'package:transmirror/core/utils/local_storage/storage_utility.dart';
 import 'package:transmirror/firebase_options.dart';
-import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:transmirror/view/overlay/resizable_overlay.dart';
 
 Future<void> main() async {
@@ -23,19 +21,6 @@ Future<void> main() async {
   LauncherShortcuts.shortcutStream.listen((String type) async {
     if (type == 'start_recording') {
       Get.offAllNamed(AppRoutes.speechToText);
-    } else if (type == 'show_overlay') {
-      if (await FlutterOverlayWindow.isActive()) return;
-      await FlutterOverlayWindow.showOverlay(
-        enableDrag: true,
-        overlayTitle: "Chat Overlay",
-        overlayContent: "Chat Overlay",
-        flag: OverlayFlag.defaultFlag,
-        alignment: OverlayAlignment.center,
-        visibility: NotificationVisibility.visibilityPublic,
-        positionGravity: PositionGravity.auto,
-        height: 500,
-        width: WindowSize.matchParent,
-      );
     }
   });
 

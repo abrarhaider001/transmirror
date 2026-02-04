@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
+import 'package:iconsax/iconsax.dart';
 
 class ResizableOverlay extends StatefulWidget {
   const ResizableOverlay({super.key});
@@ -10,12 +11,15 @@ class ResizableOverlay extends StatefulWidget {
 }
 
 class _ResizableOverlayState extends State<ResizableOverlay> {
-  // Initial size should match what is passed in showOverlay
+  // Initial size and position of the selection box
+  double _x = 50;
+  double _y = 200;
   double _width = 300;
-  double _height = 300;
+  double _height = 150;
   
-  // Color for the container
-  Color _containerColor = Colors.white;
+  // Minimum size constraints
+  final double _minWidth = 100;
+  final double _minHeight = 80;
 
   @override
   void initState() {
@@ -25,100 +29,184 @@ class _ResizableOverlayState extends State<ResizableOverlay> {
     });
   }
 
+  void _updatePosition(double dx, double dy) {
+    setState(() {
+      _x += dx;
+      _y += dy;
+    });
+  }
+
+  void _resize(double dx, double dy, {bool left = false, bool top = false, bool right = false, bool bottom = false}) {
+    setState(() {
+      if (left) {
+        if (_width - dx >= _minWidth) {
+          _x += dx;
+          _width -= dx;
+        }
+      }
+      if (right) {
+        if (_width + dx >= _minWidth) {
+          _width += dx;
+        }
+      }
+      if (top) {
+        if (_height - dy >= _minHeight) {
+          _y += dy;
+          _height -= dy;
+        }
+      }
+      if (bottom) {
+        if (_height + dy >= _minHeight) {
+          _height += dy;
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
+
       child: Stack(
         children: [
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: _containerColor,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey.shade300, width: 1),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 8,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: Column(
+          // The Selection Box
+          Positioned(
+            left: _x,
+            top: _y,
+            width: _width,
+            height: _height,
+            child: Stack(
+              clipBehavior: Clip.none,
               children: [
-                // Header / Close button area
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 12.0),
-                      child: Text(
-                        "Overlay", 
-                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey[800])
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.grey),
-                      onPressed: () async {
-                        await FlutterOverlayWindow.closeOverlay();
-                      },
-                    ),
-                  ],
-                ),
-                
-                // Content Area
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      "Resizable Container",
-                      style: TextStyle(color: Colors.grey[600]),
-                    ),
+                // 1. Visual Border (The Box itself)
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.black, width: 2),
                   ),
                 ),
+
+                // 2. Move Detector (Center Area)
+                // Inset by 20px to avoid conflict with edge resize handles
+                Positioned(
+                  top: 20, 
+                  bottom: 20, 
+                  left: 20, 
+                  right: 20,
+                  child: GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onPanUpdate: (details) {
+                      _updatePosition(details.delta.dx, details.delta.dy);
+                    },
+                    child: Container(color: Colors.transparent),
+                  ),
+                ),
+
+                // 3. Edge Handles (Resize)
+                _buildEdgeHandle(top: true),
+                _buildEdgeHandle(bottom: true),
+                _buildEdgeHandle(left: true),
+                _buildEdgeHandle(right: true),
               ],
             ),
           ),
-          
-          // Resize Handle at Bottom Right
+
+          // Close Button (Top Right of Screen)
           Positioned(
-            bottom: 0,
-            right: 0,
-            child: GestureDetector(
-              onPanUpdate: (details) async {
-                setState(() {
-                  _width += details.delta.dx;
-                  _height += details.delta.dy;
-                  
-                  // Enforce minimum size
-                  if (_width < 150) _width = 150;
-                  if (_height < 150) _height = 150;
-                });
-                
-                await FlutterOverlayWindow.resizeOverlay(
-                  _width.toInt(), 
-                  _height.toInt()
-                  , false);
+            top: 180,
+            right: 20,
+            child: _buildActionButton(
+              icon: Icons.close,
+              onTap: () async {
+                await FlutterOverlayWindow.closeOverlay();
               },
-              child: Container(
-                width: 30,
-                height: 30,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
-                  borderRadius: const BorderRadius.only(
-                    bottomRight: Radius.circular(12),
-                  ),
-                ),
-                child: const Icon(
-                  Icons.open_in_full_rounded, // or filter_list or drag_handle
-                  color: Colors.blueAccent,
-                  size: 20,
-                ),
-              ),
+            ),
+          ),          
+          // Start Extracting Button (Top Right of Screen)
+          Positioned(
+            top: 240,
+            right: 20,
+            child: _buildActionButton(
+              icon: Iconsax.magicpen,
+              onTap: () async {
+                await FlutterOverlayWindow.closeOverlay();
+              },
             ),
           ),
         ],
+      ),
+    
+    );
+  }
+
+  Widget _buildEdgeHandle({bool top = false, bool bottom = false, bool left = false, bool right = false}) {
+    // Thickness of the invisible touch area
+    const double touchThickness = 50.0;
+    // Offset to center the touch area on the border (thickness / 2)
+    const double offset = -25.0; 
+
+    return Positioned(
+      top: top ? offset : (bottom ? null : 0),
+      bottom: bottom ? offset : (top ? null : 0),
+      left: left ? offset : (right ? null : 0),
+      right: right ? offset : (left ? null : 0),
+      height: (top || bottom) ? touchThickness : null,
+      width: (left || right) ? touchThickness : null,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onPanUpdate: (details) {
+          _resize(
+            details.delta.dx, 
+            details.delta.dy, 
+            top: top, 
+            bottom: bottom, 
+            left: left, 
+            right: right
+          );
+        },
+        child: Container(
+          color: Colors.transparent,
+          child: Center(
+            child: Container(
+              width: (top || bottom) ? 40 : 6,
+              height: (left || right) ? 40 : 6,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(3),
+                border: Border.all(color: Colors.black, width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 4,
+                  )
+                ]
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({required IconData icon, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.black,
+          shape: BoxShape.circle,
+          border: Border.all(color: Colors.white, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 8,
+            )
+          ]
+        ),
+        child: Icon(icon, color: Colors.white, size: 24),
       ),
     );
   }

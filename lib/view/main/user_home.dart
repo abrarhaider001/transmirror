@@ -94,15 +94,15 @@ class _HomePageState extends State<HomePage> {
                       if (await FlutterOverlayWindow.isActive()) return;
                       
                       await FlutterOverlayWindow.showOverlay(
-                        enableDrag: true,
+                        enableDrag: false, // We handle drag inside the full screen overlay
                         overlayTitle: "Overlay",
                         overlayContent: "Overlay Active",
                         flag: OverlayFlag.defaultFlag,
                         alignment: OverlayAlignment.center,
                         visibility: NotificationVisibility.visibilityPublic,
                         positionGravity: PositionGravity.auto,
-                        height: 300,
-                        width: 300,
+                        height: WindowSize.matchParent,
+                        width: WindowSize.matchParent,
                       );
                     },
                   ),

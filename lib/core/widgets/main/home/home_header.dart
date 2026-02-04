@@ -18,36 +18,48 @@ class HomeHeader extends StatelessWidget {
         ? 'Good Afternoon'
         : 'Good Evening';
 
-    return Row(
-      children: [
-        const CircleAvatar(
-          radius: 20,
-          backgroundColor: MyColors.grey,
-          foregroundImage: AssetImage(MyImages.user),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                greet,
-                style:
-                    (MyTextTheme.lightTextTheme.bodySmall ?? const TextStyle())
-                        .copyWith(color: MyColors.textSecondary, fontSize: 12),
-              ),
-              Text(
-                name,
-                style:
-                    (MyTextTheme.lightTextTheme.headlineMedium ??
-                            const TextStyle())
-                        .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-            ],
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: Row(
+        children: [
+          Container(
+            width: 40,
+            height: 40,
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: MyColors.grey,
+            ),
+            clipBehavior: Clip.antiAlias,
+            child: Image.asset(
+              MyImages.user,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return const Icon(Iconsax.user, color: MyColors.textSecondary);
+              },
+            ),
           ),
-        ),
-        _buildIconButton(Iconsax.notification),
-      ],
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  greet,
+                  style: (MyTextTheme.lightTextTheme.bodySmall ?? const TextStyle())
+                      .copyWith(color: MyColors.textSecondary, fontSize: 12),
+                ),
+                Text(
+                  name,
+                  style: (MyTextTheme.lightTextTheme.headlineMedium ?? const TextStyle())
+                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          _buildIconButton(Iconsax.notification),
+        ],
+      ),
     );
   }
 

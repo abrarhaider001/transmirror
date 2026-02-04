@@ -32,15 +32,6 @@ class LauncherShortcutService {
           localizedSubtitle: 'Localized Subtitle',
         ),
       ),
-      ShortcutItem(
-        type: 'show_overlay',
-        localizedTitle: 'Show Overlay',
-        androidConfig: AndroidConfig(icon: "assets/launcher/logo.png"),
-        iosConfig: IosConfig(
-          icon: 'logo',
-          localizedSubtitle: 'Show Chat Overlay',
-        ),
-      ),
     ]);
   }
 
