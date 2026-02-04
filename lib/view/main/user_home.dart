@@ -11,6 +11,7 @@ import 'package:transmirror/core/widgets/main/home/home_note_card.dart';
 import 'package:transmirror/core/widgets/main/home/home_search_bar.dart';
 
 import 'package:transmirror/model/user_model.dart';
+import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -79,12 +80,32 @@ class _HomePageState extends State<HomePage> {
                     icon: Iconsax.magicpen, // Or similar AI icon
                     onTap: () => Get.toNamed(AppRoutes.aiResponse),
                   ),
-                  // HomeNoteCard(
-                  //   title: 'Extract Text',
-                  //   subtitle: 'Copy text from any screen',
-                  //   icon: Iconsax.scan,
-                  //   onTap: { },
-                  // ),
+                  HomeNoteCard(
+                    title: 'Extract Text',
+                    subtitle: 'Copy text from any screen',
+                    icon: Iconsax.scan,
+                    onTap: () async {
+                      final status = await FlutterOverlayWindow.isPermissionGranted();
+                      if (!status) {
+                        final bool? granted = await FlutterOverlayWindow.requestPermission();
+                        if (granted != true) return;
+                      }
+                      
+                      if (await FlutterOverlayWindow.isActive()) return;
+                      
+                      await FlutterOverlayWindow.showOverlay(
+                        enableDrag: true,
+                        overlayTitle: "Overlay",
+                        overlayContent: "Overlay Active",
+                        flag: OverlayFlag.defaultFlag,
+                        alignment: OverlayAlignment.center,
+                        visibility: NotificationVisibility.visibilityPublic,
+                        positionGravity: PositionGravity.auto,
+                        height: 300,
+                        width: 300,
+                      );
+                    },
+                  ),
                 ],
               ),
             ),
