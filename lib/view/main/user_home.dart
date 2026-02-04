@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:transmirror/core/routes/app_routes.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/sizes.dart';
@@ -9,6 +11,7 @@ import 'package:transmirror/core/utils/local_storage/storage_utility.dart';
 import 'package:transmirror/core/widgets/main/home/home_header.dart';
 import 'package:transmirror/core/widgets/main/home/home_note_card.dart';
 import 'package:transmirror/core/widgets/main/home/home_search_bar.dart';
+
 import 'package:transmirror/model/user_model.dart';
 
 class HomePage extends StatefulWidget {
@@ -30,23 +33,67 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _showOverlay() async {
-    final bool? status = await FlutterOverlayWindow.isPermissionGranted();
-    if (status != true) {
-      final bool? granted = await FlutterOverlayWindow.requestPermission();
-      if (granted != true) return;
+    debugPrint("DEBUG: _showOverlay called");
+    
+    // Check permission using permission_handler
+    var status = await Permission.systemAlertWindow.status;
+    debugPrint("DEBUG: Permission status: $status");
+
+    if (!status.isGranted) {
+      debugPrint("DEBUG: Requesting permission...");
+      status = await Permission.systemAlertWindow.request();
+      debugPrint("DEBUG: Permission granted result: $status");
+      
+      if (!status.isGranted) {
+        debugPrint("DEBUG: Permission denied, returning.");
+        if (mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Permission denied for Overlay")));
+        }
+        return;
+      }
     }
     
-    await FlutterOverlayWindow.showOverlay(
-      enableDrag: true,
-      overlayTitle: "Extract Text",
-      flag: OverlayFlag.defaultFlag,
-      alignment: OverlayAlignment.center,
-      visibility: NotificationVisibility.visibilityPublic,
-      positionGravity: PositionGravity.auto,
-      height: WindowSize.matchParent,
-      width: WindowSize.matchParent,
-    );
-  }
+    // Request notification permission for Android 13+
+    if (await Permission.notification.isDenied) {
+      await Permission.notification.request();
+    }
+
+      debugPrint("DEBUG: Calling FlutterOverlayWindow.showOverlay");
+      try {
+        if (await FlutterOverlayWindow.isActive()) {
+           debugPrint("DEBUG: Overlay already active, closing first");
+           await FlutterOverlayWindow.closeOverlay();
+           await Future.delayed(const Duration(milliseconds: 200));
+        }
+
+        await FlutterOverlayWindow.showOverlay(
+          enableDrag: true,
+          overlayTitle: "Extract Text",
+          overlayContent: "Overlay is active",
+          flag: OverlayFlag.defaultFlag,
+          alignment: OverlayAlignment.center,
+          visibility: NotificationVisibility.visibilityPublic,
+          positionGravity: PositionGravity.auto,
+          height: 400,
+          width: 400,
+        );
+        debugPrint("DEBUG: showOverlay returned success");
+        if (mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Overlay started!")));
+        }
+      } catch (e) {
+        debugPrint("DEBUG: Error showing overlay: $e");
+        if (mounted) {
+           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
+        }
+      }
+      
+      // Minimize the app to show overlay
+      debugPrint("DEBUG: Waiting 1 second before minimizing...");
+      await Future.delayed(const Duration(seconds: 1));
+      debugPrint("DEBUG: Minimizing app now");
+      SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+    }
 
   @override
   Widget build(BuildContext context) {
