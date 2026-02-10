@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:swipe_image_ocr/swipe_image_ocr.dart';
@@ -30,6 +31,7 @@ class SwipeTextSelector extends StatefulWidget {
 class _SwipeTextSelectorState extends State<SwipeTextSelector> {
   double _pointerSize = 15.0;
   Uint8List? _imageBytes;
+  double _aspectRatio = 1.0;
 
   @override
   void initState() {
@@ -39,9 +41,21 @@ class _SwipeTextSelectorState extends State<SwipeTextSelector> {
 
   Future<void> _loadImageBytes() async {
     final bytes = await widget.image.readAsBytes();
+    
+    double aspectRatio = 1.0;
+    try {
+      final codec = await ui.instantiateImageCodec(bytes);
+      final frameInfo = await codec.getNextFrame();
+      final image = frameInfo.image;
+      aspectRatio = image.width / image.height;
+    } catch (e) {
+      debugPrint("Error calculating aspect ratio: $e");
+    }
+
     if (mounted) {
       setState(() {
         _imageBytes = bytes;
+        _aspectRatio = aspectRatio;
       });
     }
   }
@@ -78,23 +92,31 @@ class _SwipeTextSelectorState extends State<SwipeTextSelector> {
     return Column(
       children: [
         Expanded(
-          child: Stack(
-            children: [
-              SwipeImageOCR(
-                imageBytes: _imageBytes!,
-                onTextRead: (text) {
-                  if (text != null) {
-                    widget.onTextSelected(text);
-                  }
-                },
-                strokeWidth: _pointerSize,
-                swipeColor: MyColors.primary.withOpacity(0.5),
-                indicatorColor: MyColors.primary,
-              ),
-              if (widget.detectedLanguage != null)
-                Positioned(
-                  bottom: 20,
-                  right: 20,
+          child: Container(
+            width: double.infinity,
+            color: Colors.grey[200],
+            child: Stack(
+              children: [
+                Center(
+                  child: AspectRatio(
+                    aspectRatio: _aspectRatio,
+                    child: SwipeImageOCR(
+                      imageBytes: _imageBytes!,
+                      onTextRead: (text) {
+                        if (text != null) {
+                          widget.onTextSelected(text);
+                        }
+                      },
+                      strokeWidth: _pointerSize,
+                      swipeColor: MyColors.primary.withOpacity(0.5),
+                      indicatorColor: MyColors.primary,
+                    ),
+                  ),
+                ),
+                if (widget.detectedLanguage != null)
+                  Positioned(
+                    bottom: 20,
+                    right: 20,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -109,6 +131,7 @@ class _SwipeTextSelectorState extends State<SwipeTextSelector> {
             ],
           ),
         ),
+      ),
         Container(
           color: MyColors.primaryBackground,
           padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
@@ -116,17 +139,6 @@ class _SwipeTextSelectorState extends State<SwipeTextSelector> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (widget.detectedLanguage != null) ...[
-                Text(
-                  "Detected Language: ${widget.detectedLanguage}",
-                  style: const TextStyle(
-                    color: MyColors.primary, 
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 18),
-              ],
               const Text(
                 "Pointer Size",
                 style: TextStyle(color: MyColors.textPrimary, fontWeight: FontWeight.bold),

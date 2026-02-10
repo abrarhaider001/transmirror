@@ -29,4 +29,5 @@ class AppRoutes {
   static const speechToText = '/speech-to-text';
   static const createNote = '/create-note';
   static const downloadModels = '/downloadModels';
+  static const imageSelection = '/image-selection';
 }

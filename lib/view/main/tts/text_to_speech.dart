@@ -29,8 +29,6 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
   OnDeviceTranslator? _customTranslator;
   final OnDeviceTranslatorModelManager _modelManager = OnDeviceTranslatorModelManager();
   
-  String? _detectedLanguage;
-
   @override
   void initState() {
     super.initState();
@@ -45,11 +43,7 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
         _customTextController.text = args['text'];
       }
       if (args['detectedLanguage'] != null) {
-        setState(() {
-          _detectedLanguage = args['detectedLanguage'];
-        });
-        // Try to auto-select the source language
-        _trySetSourceLanguage(_detectedLanguage!);
+        _trySetSourceLanguage(args['detectedLanguage']);
       }
     }
   }
@@ -217,22 +211,6 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
               ),
             ),
             
-            // Detected Language Indicator
-            if (_detectedLanguage != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: Row(
-                  children: [
-                    const Icon(Icons.language, size: 16, color: MyColors.primary),
-                    const SizedBox(width: 8),
-                    Text(
-                      "Detected Language: $_detectedLanguage", 
-                      style: const TextStyle(color: MyColors.primary, fontWeight: FontWeight.bold)
-                    ),
-                  ],
-                ),
-              ),
-
             // Mode Selector
             TTSModeSelector(
               isTranslateMode: _isTranslateMode,

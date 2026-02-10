@@ -11,6 +11,7 @@ import 'package:transmirror/view/main/tts/text_to_speech.dart';
 import 'package:transmirror/view/main/ai_response/ai_response.dart';
 import 'package:transmirror/view/main/stt/voice_listening.dart';
 import 'package:transmirror/view/main/notes/create_note.dart';
+import 'package:transmirror/view/main/ocr/image_selection_page.dart';
 
 class AppPages {
   static final pages = [
@@ -33,5 +34,6 @@ class AppPages {
     GetPage(name: AppRoutes.speechToText, page: () => const VoiceListeningPage()),
     GetPage(name: AppRoutes.createNote, page: () => const CreateNotePage()),
     GetPage(name: AppRoutes.downloadModels, page: () => const DownloadModelsPage()),
+    GetPage(name: AppRoutes.imageSelection, page: () => const ImageSelectionPage()),
   ];
 }

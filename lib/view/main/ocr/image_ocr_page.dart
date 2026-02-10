@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_mlkit_language_id/google_mlkit_language_id.dart';
 import 'package:transmirror/core/routes/app_routes.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/widgets/layout_app_bar.dart';
 import 'package:transmirror/core/widgets/swipe_text_selector.dart';
 
 class ImageOcrPage extends StatefulWidget {
@@ -106,9 +107,6 @@ class _ImageOcrPageState extends State<ImageOcrPage> {
   void _handleCopy() {
     if (_extractedText != null && _extractedText!.isNotEmpty) {
       Clipboard.setData(ClipboardData(text: _extractedText!));
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Text copied to clipboard")),
-      );
     }
   }
 
@@ -147,50 +145,42 @@ class _ImageOcrPageState extends State<ImageOcrPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: MyColors.primaryBackground,
-      appBar: AppBar(
-        backgroundColor: MyColors.primaryBackground,
-        iconTheme: const IconThemeData(color: MyColors.textPrimary),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Container(
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-          decoration: BoxDecoration(  
-            color: MyColors.primaryBackground.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: const Text(
-            "Swipe over the text to extract it.",
-            style: TextStyle(color: MyColors.textPrimary, fontSize: 14),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        centerTitle: true,
-      ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Swipe Text Selector
-          SwipeTextSelector(
-            image: File(widget.imagePath),
-            onTextSelected: _handleTextSelected,
-            detectedLanguage: _detectedLanguage != null ? _getLanguageName(_detectedLanguage!) : null,
-            onCopyPressed: _handleCopy,
-            onSpeechPressed: _handleSpeech,
-            onViewPressed: _handleView,
-          ),
-          
-          if (_isProcessing)
-            Container(
-              color: MyColors.primaryBackground.withOpacity(0.5),
-              child: const Center(
-                child: CircularProgressIndicator(),
+      backgroundColor: MyColors.softGrey,
+      body: SafeArea(
+        child: Column(
+          children: [
+            const LayoutPagesAppBar(
+              title: 'Swipe over the text to extract it',
+              showBack: true,
+              showTrailing: false,
+            ),
+            
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  // Swipe Text Selector
+                  SwipeTextSelector(
+                    image: File(widget.imagePath),
+                    onTextSelected: _handleTextSelected,
+                    detectedLanguage: _detectedLanguage != null ? _getLanguageName(_detectedLanguage!) : null,
+                    onCopyPressed: _handleCopy,
+                    onSpeechPressed: _handleSpeech,
+                    onViewPressed: _handleView,
+                  ),
+                  
+                  if (_isProcessing)
+                    Container(
+                      color: MyColors.primaryBackground.withOpacity(0.5),
+                      child: const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                ],
               ),
             ),
-        ],
+          ],
+        ),
       ),
     );
   }
