@@ -11,6 +11,7 @@
 #include <firebase_core/firebase_core_plugin_c_api.h>
 #include <flutter_onnxruntime/flutter_onnxruntime_plugin.h>
 #include <flutter_tts/flutter_tts_plugin.h>
+#include <gal/gal_plugin_c_api.h>
 #include <permission_handler_windows/permission_handler_windows_plugin.h>
 #include <url_launcher_windows/url_launcher_windows.h>
 
@@ -25,6 +26,8 @@ void RegisterPlugins(flutter::PluginRegistry* registry) {
       registry->GetRegistrarForPlugin("FlutterOnnxruntimePlugin"));
   FlutterTtsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("FlutterTtsPlugin"));
+  GalPluginCApiRegisterWithRegistrar(
+      registry->GetRegistrarForPlugin("GalPluginCApi"));
   PermissionHandlerWindowsPluginRegisterWithRegistrar(
       registry->GetRegistrarForPlugin("PermissionHandlerWindowsPlugin"));
   UrlLauncherWindowsRegisterWithRegistrar(

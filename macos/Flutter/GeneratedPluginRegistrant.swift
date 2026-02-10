@@ -11,6 +11,7 @@ import firebase_auth
 import firebase_core
 import flutter_onnxruntime
 import flutter_tts
+import gal
 import just_audio
 import path_provider_foundation
 import supertonic_flutter
@@ -23,6 +24,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   FLTFirebaseCorePlugin.register(with: registry.registrar(forPlugin: "FLTFirebaseCorePlugin"))
   FlutterOnnxruntimePlugin.register(with: registry.registrar(forPlugin: "FlutterOnnxruntimePlugin"))
   FlutterTtsPlugin.register(with: registry.registrar(forPlugin: "FlutterTtsPlugin"))
+  GalPlugin.register(with: registry.registrar(forPlugin: "GalPlugin"))
   JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
   SupertonicFlutterPlugin.register(with: registry.registrar(forPlugin: "SupertonicFlutterPlugin"))

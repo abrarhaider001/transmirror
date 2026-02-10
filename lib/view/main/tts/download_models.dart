@@ -16,7 +16,7 @@ class _DownloadModelsPageState extends State<DownloadModelsPage> {
       OnDeviceTranslatorModelManager();
   final Set<String> _downloadedModels = {};
   final Set<String> _downloadingModels = {};
-  List<TranslateLanguage> _languages = TranslateLanguage.values;
+  final List<TranslateLanguage> _languages = TranslateLanguage.values;
 
   @override
   void initState() {

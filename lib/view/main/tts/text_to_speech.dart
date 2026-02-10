@@ -28,11 +28,51 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
   TranslateLanguage _selectedSourceLanguage = TranslateLanguage.english;
   OnDeviceTranslator? _customTranslator;
   final OnDeviceTranslatorModelManager _modelManager = OnDeviceTranslatorModelManager();
+  
+  String? _detectedLanguage;
 
   @override
   void initState() {
     super.initState();
     _initTts();
+    _handleArguments();
+  }
+
+  void _handleArguments() {
+    final args = Get.arguments;
+    if (args is Map) {
+      if (args['text'] != null) {
+        _customTextController.text = args['text'];
+      }
+      if (args['detectedLanguage'] != null) {
+        setState(() {
+          _detectedLanguage = args['detectedLanguage'];
+        });
+        // Try to auto-select the source language
+        _trySetSourceLanguage(_detectedLanguage!);
+      }
+    }
+  }
+
+  void _trySetSourceLanguage(String langCode) {
+     // Try to find matching TranslateLanguage
+     try {
+       // Check against bcpCode or name
+       final matched = TranslateLanguage.values.firstWhere(
+         (l) => l.bcpCode == langCode || l.name.toLowerCase() == langCode.toLowerCase(), 
+         orElse: () => TranslateLanguage.english
+       );
+       // If we found a match (and it wasn't just the default 'english' fallback unless the input was actually english)
+       // Actually firstWhere with orElse returns english if not found.
+       // We can check if langCode matches english properties.
+       
+       bool isEnglish = langCode == 'en' || langCode.toLowerCase() == 'english';
+       if (matched != TranslateLanguage.english || isEnglish) {
+          setState(() {
+            _selectedSourceLanguage = matched;
+          });
+       }
+     } catch (_) {}
   }
 
   Future<void> _initTts() async {
@@ -176,6 +216,23 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
                 child: const Icon(Icons.downloading_sharp, color: MyColors.primary, size: 20,),
               ),
             ),
+            
+            // Detected Language Indicator
+            if (_detectedLanguage != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                child: Row(
+                  children: [
+                    const Icon(Icons.language, size: 16, color: MyColors.primary),
+                    const SizedBox(width: 8),
+                    Text(
+                      "Detected Language: $_detectedLanguage", 
+                      style: const TextStyle(color: MyColors.primary, fontWeight: FontWeight.bold)
+                    ),
+                  ],
+                ),
+              ),
+
             // Mode Selector
             TTSModeSelector(
               isTranslateMode: _isTranslateMode,

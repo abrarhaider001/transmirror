@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:transmirror/core/routes/app_routes.dart';
 import 'package:transmirror/core/utils/constants/image_strings.dart';
 import 'package:transmirror/core/utils/device/device_utility.dart';
-import 'package:transmirror/core/utils/local_storage/storage_utility.dart';
 import 'package:transmirror/core/widgets/custom_background.dart';
 
 class Splash extends StatefulWidget {
@@ -29,9 +28,11 @@ class _SplashState extends State<Splash> {
     //   Get.offAllNamed(AppRoutes.onBoarding);
     //   return;
     // }
-    final loggedFlag = MyLocalStorage.instance().readData<dynamic>('isUserLoggedIn') as bool?;
-    final isUserLoggedIn = loggedFlag ?? false;
-    Get.offAllNamed(isUserLoggedIn ? AppRoutes.home : AppRoutes.login);
+    // final loggedFlag = MyLocalStorage.instance().readData<dynamic>('isUserLoggedIn') as bool?;
+    // final isUserLoggedIn = loggedFlag ?? false;
+    // Get.offAllNamed(isUserLoggedIn ? AppRoutes.home : AppRoutes.login);
+    Get.offAllNamed(AppRoutes.home);
+
   }
   @override
   Widget build(BuildContext context) {

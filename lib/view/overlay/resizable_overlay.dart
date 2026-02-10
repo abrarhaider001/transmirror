@@ -1,7 +1,12 @@
 import 'dart:developer';
+import 'dart:isolate';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_overlay_window/flutter_overlay_window.dart';
 import 'package:iconsax/iconsax.dart';
+
+import 'package:transmirror/view/overlay/selection_box.dart';
 
 class ResizableOverlay extends StatefulWidget {
   const ResizableOverlay({super.key});
@@ -26,7 +31,35 @@ class _ResizableOverlayState extends State<ResizableOverlay> {
     super.initState();
     FlutterOverlayWindow.overlayListener.listen((event) {
       log("Overlay received event: $event");
+      if (event is Map && event['type'] == 'result') {
+        _showResultDialog(event['text']);
+      } else if (event is String && event.startsWith('Error')) {
+         _showResultDialog(event);
+      }
     });
+  }
+
+  void _showResultDialog(String text) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Extracted Text"),
+        content: SingleChildScrollView(child: Text(text)),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: text));
+              Navigator.pop(context);
+            }, 
+            child: const Text("Copy")
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context), 
+            child: const Text("Close")
+          ),
+        ],
+      ),
+    );
   }
 
   void _updatePosition(double dx, double dy) {
@@ -71,46 +104,15 @@ class _ResizableOverlayState extends State<ResizableOverlay> {
       child: Stack(
         children: [
           // The Selection Box
-          Positioned(
-            left: _x,
-            top: _y,
+          SelectionBox(
+            x: _x,
+            y: _y,
             width: _width,
             height: _height,
-            child: Stack(
-              clipBehavior: Clip.none,
-              children: [
-                // 1. Visual Border (The Box itself)
-                Container(
-                  decoration: BoxDecoration(
-                    color: Colors.transparent,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.black, width: 2),
-                  ),
-                ),
-
-                // 2. Move Detector (Center Area)
-                // Inset by 20px to avoid conflict with edge resize handles
-                Positioned(
-                  top: 20, 
-                  bottom: 20, 
-                  left: 20, 
-                  right: 20,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onPanUpdate: (details) {
-                      _updatePosition(details.delta.dx, details.delta.dy);
-                    },
-                    child: Container(color: Colors.transparent),
-                  ),
-                ),
-
-                // 3. Edge Handles (Resize)
-                _buildEdgeHandle(top: true),
-                _buildEdgeHandle(bottom: true),
-                _buildEdgeHandle(left: true),
-                _buildEdgeHandle(right: true),
-              ],
-            ),
+            minWidth: _minWidth,
+            minHeight: _minHeight,
+            onMove: _updatePosition,
+            onResize: _resize,
           ),
 
           // Close Button (Top Right of Screen)
@@ -126,67 +128,31 @@ class _ResizableOverlayState extends State<ResizableOverlay> {
           ),          
           // Start Extracting Button (Top Right of Screen)
           Positioned(
-            top: 240,
+            top: 280,
             right: 20,
             child: _buildActionButton(
               icon: Iconsax.magicpen,
               onTap: () async {
-                await FlutterOverlayWindow.closeOverlay();
+                // Lookup Main App Port
+                final SendPort? mainPort = IsolateNameServer.lookupPortByName('main_app_port');
+                if (mainPort != null) {
+                  mainPort.send({
+                    'action': 'capture',
+                    'x': _x,
+                    'y': _y,
+                    'w': _width,
+                    'h': _height,
+                    'ratio': MediaQuery.of(context).devicePixelRatio,
+                  });
+                } else {
+                  log("Main Port not found");
+                }
               },
             ),
           ),
         ],
       ),
     
-    );
-  }
-
-  Widget _buildEdgeHandle({bool top = false, bool bottom = false, bool left = false, bool right = false}) {
-    // Thickness of the invisible touch area
-    const double touchThickness = 50.0;
-    // Offset to center the touch area on the border (thickness / 2)
-    const double offset = -25.0; 
-
-    return Positioned(
-      top: top ? offset : (bottom ? null : 0),
-      bottom: bottom ? offset : (top ? null : 0),
-      left: left ? offset : (right ? null : 0),
-      right: right ? offset : (left ? null : 0),
-      height: (top || bottom) ? touchThickness : null,
-      width: (left || right) ? touchThickness : null,
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onPanUpdate: (details) {
-          _resize(
-            details.delta.dx, 
-            details.delta.dy, 
-            top: top, 
-            bottom: bottom, 
-            left: left, 
-            right: right
-          );
-        },
-        child: Container(
-          color: Colors.transparent,
-          child: Center(
-            child: Container(
-              width: (top || bottom) ? 40 : 6,
-              height: (left || right) ? 40 : 6,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(3),
-                border: Border.all(color: Colors.black, width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 4,
-                  )
-                ]
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
