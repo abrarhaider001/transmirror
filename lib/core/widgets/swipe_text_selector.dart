@@ -9,6 +9,7 @@ import 'package:transmirror/core/utils/constants/colors.dart';
 class SwipeTextSelector extends StatefulWidget {
   final File image;
   final Function(String) onTextSelected;
+  final VoidCallback? onScanStarted;
   final String? detectedLanguage;
   final VoidCallback? onCopyPressed;
   final VoidCallback? onSpeechPressed;
@@ -18,6 +19,7 @@ class SwipeTextSelector extends StatefulWidget {
     super.key,
     required this.image,
     required this.onTextSelected,
+    this.onScanStarted,
     this.detectedLanguage,
     this.onCopyPressed,
     this.onSpeechPressed,
@@ -100,16 +102,19 @@ class _SwipeTextSelectorState extends State<SwipeTextSelector> {
                 Center(
                   child: AspectRatio(
                     aspectRatio: _aspectRatio,
-                    child: SwipeImageOCR(
-                      imageBytes: _imageBytes!,
-                      onTextRead: (text) {
-                        if (text != null) {
-                          widget.onTextSelected(text);
-                        }
-                      },
-                      strokeWidth: _pointerSize,
-                      swipeColor: MyColors.primary.withOpacity(0.5),
-                      indicatorColor: MyColors.primary,
+                    child: Listener(
+                      onPointerDown: (_) => widget.onScanStarted?.call(),
+                      child: SwipeImageOCR(
+                        imageBytes: _imageBytes!,
+                        onTextRead: (text) {
+                          if (text != null) {
+                            widget.onTextSelected(text);
+                          }
+                        },
+                        strokeWidth: _pointerSize,
+                        swipeColor: MyColors.primary.withOpacity(0.5),
+                        indicatorColor: MyColors.primary,
+                      ),
                     ),
                   ),
                 ),
