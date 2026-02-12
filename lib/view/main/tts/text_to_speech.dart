@@ -258,7 +258,13 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
                         isPlaying: _currentlyPlayingLanguage != null,
                         isProcessing: _isProcessing,
                         onActionPressed: _handleCustomAction,
-                        onStopPressed: () => _flutterTts.stop(),
+                        onStopPressed: () async {
+                          await _flutterTts.stop();
+                          setState(() {
+                            _currentlyPlayingLanguage = null;
+                            _isProcessing = false;
+                          });
+                        },
                       ),
                     ),
                   ],

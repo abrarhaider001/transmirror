@@ -68,39 +68,55 @@ class TTSInputOverlay extends StatelessWidget {
             ),
           ),
 
-          // Right: Play Button
-          GestureDetector(
+          // Right: Control Button
+          _buildControlButton(
             onTap: isPlaying ? onStopPressed : (isProcessing ? null : onActionPressed),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: MyColors.primary,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: MyColors.primary.withOpacity(0.4),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: isProcessing
-                  ? const Center(
-                      child: SizedBox(
-                        height: 18,
-                        width: 18,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                      ),
-                    )
-                  : Icon(
-                      isPlaying ? Iconsax.pause : Iconsax.play,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-            ),
+            icon: isPlaying ? Iconsax.stop : Iconsax.play,
+            color: isPlaying ? Colors.red : MyColors.primary,
+            isProcessing: isProcessing,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildControlButton({
+    required VoidCallback? onTap,
+    required IconData icon,
+    required Color color,
+    bool isProcessing = false,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(14),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+child: isPlaying
+    ? Icon(Iconsax.stop, color: Colors.white, size: 20)
+    : isProcessing
+        ? const Center(
+            child: SizedBox(
+              height: 20,
+              width: 20,
+              child: CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 2,
+              ),
+            ),
+          )
+        : Icon(Iconsax.volume_high, color: Colors.white, size: 20),
+
       ),
     );
   }
