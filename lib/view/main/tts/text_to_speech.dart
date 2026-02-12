@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
-import 'package:transmirror/core/routes/app_routes.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
 import 'package:transmirror/core/widgets/widgets/tts_input_overlay.dart';
@@ -196,19 +195,6 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
             //Appbar
             LayoutPagesAppBar(
               title: 'Text to Speech',
-              showTrailing: true,
-              onTrailingPressed: () {
-                Get.toNamed(AppRoutes.downloadModels);
-              },
-              trailingWidget: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: MyColors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: const Icon(Icons.downloading_sharp, color: MyColors.primary, size: 20,),
-              ),
             ),
             
             // Mode Selector

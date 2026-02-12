@@ -116,6 +116,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   const SizedBox(height: 10),
                   ProfileTile(
+                    icon: Icons.downloading_sharp,
+                    label: 'Download language Models',
+                    onTap: () => Get.toNamed(AppRoutes.downloadModels),
+                  ),
+                  const SizedBox(height: 10),
+                  ProfileTile(
                     icon: Iconsax.convert,
                     label: 'Terms & Conditions',
                     onTap: () => Get.toNamed(AppRoutes.termsConditions),
