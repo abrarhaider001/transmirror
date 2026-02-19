@@ -8,7 +8,7 @@ import 'package:transmirror/view/main/tts/download_models.dart';
 import 'package:transmirror/view/splash.dart';
 import 'package:transmirror/view/main/notes/text_note.dart';
 import 'package:transmirror/view/main/tts/text_to_speech.dart';
-import 'package:transmirror/view/main/ai_response/ai_response.dart';
+import 'package:transmirror/view/main/ai_response/file_selector.dart';
 import 'package:transmirror/view/main/stt/voice_listening.dart';
 import 'package:transmirror/view/main/notes/create_note.dart';
 import 'package:transmirror/view/main/ocr/image_selection_page.dart';

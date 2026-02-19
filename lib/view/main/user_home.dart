@@ -75,9 +75,9 @@ class _HomePageState extends State<HomePage> {
                       onTap: () => Get.toNamed(AppRoutes.speechToText),
                     ),
                     HomeNoteCard(
-                      title: 'AI Response',
-                      subtitle: 'Get smart, context-aware replies',
-                      icon: Iconsax.magicpen, // Or similar AI icon
+                      title: 'Document Viewer',
+                      subtitle: 'Open and view your files and documents',
+                      icon: Iconsax.document,
                       onTap: () => Get.toNamed(AppRoutes.aiResponse),
                     ),
                     HomeNoteCard(

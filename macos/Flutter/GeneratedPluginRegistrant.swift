@@ -17,6 +17,7 @@ import gal
 import just_audio
 import path_provider_foundation
 import speech_to_text
+import sqflite_darwin
 import supertonic_flutter
 import url_launcher_macos
 
@@ -33,6 +34,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
   SpeechToTextPlugin.register(with: registry.registrar(forPlugin: "SpeechToTextPlugin"))
+  SqflitePlugin.register(with: registry.registrar(forPlugin: "SqflitePlugin"))
   SupertonicFlutterPlugin.register(with: registry.registrar(forPlugin: "SupertonicFlutterPlugin"))
   UrlLauncherPlugin.register(with: registry.registrar(forPlugin: "UrlLauncherPlugin"))
 }

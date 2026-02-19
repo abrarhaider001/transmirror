@@ -49,13 +49,14 @@ dependencies:
   path_provider: ^2.1.5
   flutter_overlay_window: ^0.5.0
   google_mlkit_text_recognition: ^0.15.1
-  image: ^4.5.4
   swipe_image_ocr: ^0.0.1+2
   gal: ^2.3.0
   google_mlkit_language_id: ^0.13.1
   image_picker: ^1.2.1
   device_info_plus: ^12.3.0
   speech_to_text: ^7.3.0
+  file_selector: ^1.0.4
+  easy_pdf_viewer: ^1.0.7
   # image_gallery_saver: ^2.0.3
   # flutter_overlay_window: ^0.5.0
   # voice_to_text: ^1.0.3
