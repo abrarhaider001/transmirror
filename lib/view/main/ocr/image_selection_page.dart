@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -7,6 +8,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/theme/widget_themes/text_theme.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
+import 'package:transmirror/view/main/ai_response/document_viewer_page.dart';
 import 'package:transmirror/view/main/ocr/image_ocr_page.dart';
 
 class ImageSelectionPage extends StatefulWidget {
@@ -17,22 +19,29 @@ class ImageSelectionPage extends StatefulWidget {
 }
 
 class _ImageSelectionPageState extends State<ImageSelectionPage> {
-  int _selectedIndex = -1; // -1: None, 0: Camera, 1: Gallery
+  // -1: None, 0: Camera, 1: Gallery, 2: Files
+  int _selectedIndex = -1;
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _handleSelection() async {
     if (_selectedIndex == -1) return;
 
-    final source = _selectedIndex == 0
-        ? ImageSource.camera
-        : ImageSource.gallery;
+    if (_selectedIndex == 0 || _selectedIndex == 1) {
+      await _pickFromCameraOrGallery();
+    } else if (_selectedIndex == 2) {
+      await _pickFromFiles();
+    }
+  }
+
+  Future<void> _pickFromCameraOrGallery() async {
+    final source =
+        _selectedIndex == 0 ? ImageSource.camera : ImageSource.gallery;
     final permission = _selectedIndex == 0
         ? Permission.camera
         : (GetPlatform.isAndroid && (await _getAndroidSdkVersion()) >= 33
-              ? Permission.photos
-              : Permission.storage);
+            ? Permission.photos
+            : Permission.storage);
 
-    // Check permission
     PermissionStatus status = await permission.status;
     if (!status.isGranted) {
       status = await permission.request();
@@ -46,7 +55,6 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
 
     try {
       final XFile? image = await _picker.pickImage(source: source);
-
       if (image != null) {
         Get.to(() => ImageOcrPage(imagePath: image.path));
       }
@@ -54,6 +62,55 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
       Get.snackbar(
         'Error',
         'Failed to pick image: $e',
+        backgroundColor: Colors.red.withOpacity(0.1),
+        colorText: Colors.red,
+      );
+    }
+  }
+
+  Future<void> _pickFromFiles() async {
+    Permission permission;
+    if (GetPlatform.isAndroid && (await _getAndroidSdkVersion()) >= 33) {
+      permission = Permission.photos;
+    } else {
+      permission = Permission.storage;
+    }
+
+    PermissionStatus status = await permission.status;
+    if (!status.isGranted) {
+      status = await permission.request();
+      if (!status.isGranted) {
+        if (status.isPermanentlyDenied) {
+          openAppSettings();
+        }
+        return;
+      }
+    }
+
+    const XTypeGroup documentGroup = XTypeGroup(
+      label: 'documents',
+      extensions: <String>['pdf', 'doc', 'docx'],
+    );
+
+    try {
+      final XFile? file = await openFile(
+        acceptedTypeGroups: const <XTypeGroup>[documentGroup],
+      );
+
+      if (file == null) {
+        return;
+      }
+
+      Get.to(
+        () => DocumentViewerPage(
+          filePath: file.path,
+          fileName: file.name,
+        ),
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to pick file: $e',
         backgroundColor: Colors.red.withOpacity(0.1),
         colorText: Colors.red,
       );
@@ -76,7 +133,7 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
         child: Column(
           children: [
             const LayoutPagesAppBar(
-              title: 'Select Image Source',
+              title: 'Select File Source',
               showBack: true,
               showTrailing: false,
             ),
@@ -105,6 +162,14 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
                       title: 'Picture perfect',
                       subtitle:
                           'Try using photos from your gallery to analyse complex documents.',
+                    ),
+                    const SizedBox(height: 16),
+                    _buildOptionCard(
+                      index: 2,
+                      icon: Icons.description_outlined,
+                      title: 'Pick a document',
+                      subtitle:
+                          'Choose a PDF or Word document from your device.',
                     ),
                     const Spacer(),
                     SizedBox(
