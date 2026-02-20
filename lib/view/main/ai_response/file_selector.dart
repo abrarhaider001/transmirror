@@ -4,6 +4,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
@@ -148,21 +149,22 @@ class _AiResponsePageState extends State<AiResponsePage> {
                       const Text(
                         'Add your files',
                         style: TextStyle(
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: FontWeight.w700,
                           color: MyColors.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 4),
                       const Text(
-                        'Bring in PDFs and Word documents from your device.',
+                        'Bring in PDFs and Word documents from your device and extract data from this file.',
                         style: TextStyle(
-                          fontSize: 13,
+                          fontSize: 11,
                           color: MyColors.textSecondary,
                         ),
                       ),
                       const SizedBox(height: 16),
                       Container(
+                        height: 280,
                         padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
                         decoration: BoxDecoration(
                           color: MyColors.softGrey.withOpacity(0.5),
@@ -173,10 +175,12 @@ class _AiResponsePageState extends State<AiResponsePage> {
                         ),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
-                              width: 52,
-                              height: 52,
+                              width: 72,
+                              height: 72,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 shape: BoxShape.circle,
@@ -191,10 +195,10 @@ class _AiResponsePageState extends State<AiResponsePage> {
                               child: const Icon(
                                 Icons.cloud_upload_outlined,
                                 color: MyColors.primary,
-                                size: 28,
+                                size: 38,
                               ),
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 22),
                             const Text(
                               'Browse and open a file from this device',
                               textAlign: TextAlign.center,
@@ -203,7 +207,7 @@ class _AiResponsePageState extends State<AiResponsePage> {
                                 color: MyColors.textSecondary,
                               ),
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 22),
                             SizedBox(
                               height: 40,
                               child: ElevatedButton(
@@ -241,7 +245,7 @@ class _AiResponsePageState extends State<AiResponsePage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      const Divider(height: 1),
+                      // Divider(height: 1, color: MyColors.primary.withOpacity(0.2),indent: 16,endIndent: 16,),
                       const SizedBox(height: 8),
                       const Text(
                         'Recent files',
@@ -255,11 +259,26 @@ class _AiResponsePageState extends State<AiResponsePage> {
                       if (_documents.isEmpty)
                         const Padding(
                           padding: EdgeInsets.symmetric(vertical: 16),
-                          child: Text(
-                            'No recent files',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: MyColors.textSecondary,
+                          child: Center(
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 44.0),
+                              child: Column(
+                                children: [
+                                  Icon(
+                                    Iconsax.document,
+                                    color: MyColors.textSecondary,
+                                    size: 24,
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    'No recent files',
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: MyColors.textSecondary,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         )
@@ -307,6 +326,8 @@ class _AiResponsePageState extends State<AiResponsePage> {
                             );
                           },
                         ),
+                    
+                    
                     ],
                   ),
                 ),
