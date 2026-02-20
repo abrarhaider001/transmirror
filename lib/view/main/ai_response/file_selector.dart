@@ -8,10 +8,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
 import 'package:transmirror/view/main/ai_response/document_viewer_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 const XTypeGroup _kDocumentTypeGroup = XTypeGroup(
   label: 'documents',
-  extensions: <String>['pdf'],
+  extensions: <String>['pdf', 'doc', 'docx'],
 );
 
 class AiResponsePage extends StatefulWidget {
@@ -80,17 +81,40 @@ class _AiResponsePageState extends State<AiResponsePage> {
   }
 
   Future<void> _openDocument(XFile file) async {
-    Get.to(
-      () => DocumentViewerPage(
-        filePath: file.path,
-        fileName: file.name,
-      ),
-    );
+    final name = file.name.toLowerCase();
+
+    if (name.endsWith('.pdf') || name.endsWith('.docx')) {
+      Get.to(
+        () => DocumentViewerPage(
+          filePath: file.path,
+          fileName: file.name,
+        ),
+      );
+      return;
+    }
+
+    final uri = Uri.file(file.path);
+    final canOpen = await canLaunchUrl(uri);
+    if (!canOpen) {
+      debugPrint(
+        'DOC_DEBUG: No application found to open file at ${file.path}',
+      );
+      return;
+    }
+
+    try {
+      await launchUrl(uri);
+    } catch (e) {
+      debugPrint('DOC_DEBUG: Failed to open DOC/DOCX file: $e');
+    }
   }
 
   IconData _getIconForFile(XFile file) {
     final name = file.name.toLowerCase();
     if (name.endsWith('.pdf')) return Icons.picture_as_pdf;
+    if (name.endsWith('.doc') || name.endsWith('.docx')) {
+      return Icons.description;
+    }
     return Icons.insert_drive_file;
   }
 
@@ -116,189 +140,175 @@ class _AiResponsePageState extends State<AiResponsePage> {
                     ),
                   ],
                 ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Add your files',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: MyColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Bring in PDFs and Word documents from your device.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: MyColors.textSecondary,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+                        decoration: BoxDecoration(
+                          color: MyColors.softGrey.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(18),
+                          border: Border.all(
+                            color: MyColors.primary.withOpacity(0.2),
+                          ),
+                        ),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Text(
-                              'Add your files',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w700,
-                                color: MyColors.textPrimary,
+                            Container(
+                              width: 52,
+                              height: 52,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.04),
+                                    blurRadius: 10,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.cloud_upload_outlined,
+                                color: MyColors.primary,
+                                size: 28,
                               ),
                             ),
-                            const SizedBox(height: 4),
+                            const SizedBox(height: 12),
                             const Text(
-                              'Bring in PDF documents from your device.',
+                              'Browse and open a file from this device',
+                              textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 13,
                                 color: MyColors.textSecondary,
                               ),
                             ),
                             const SizedBox(height: 16),
-                            Container(
-                              padding:
-                                  const EdgeInsets.fromLTRB(16, 20, 16, 16),
-                              decoration: BoxDecoration(
-                                color: MyColors.softGrey.withOpacity(0.5),
-                                borderRadius: BorderRadius.circular(18),
-                                border: Border.all(
-                                  color: MyColors.primary.withOpacity(0.2),
+                            SizedBox(
+                              height: 40,
+                              child: ElevatedButton(
+                                onPressed: _pickDocuments,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: MyColors.primary,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 24,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.circular(999),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Browse files',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                                 ),
                               ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Container(
-                                    width: 52,
-                                    height: 52,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color:
-                                              Colors.black.withOpacity(0.04),
-                                          blurRadius: 10,
-                                          offset: const Offset(0, 4),
-                                        ),
-                                      ],
-                                    ),
-                                    child: const Icon(
-                                      Icons.cloud_upload_outlined,
-                                      color: MyColors.primary,
-                                      size: 28,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 12),
-                                  const Text(
-                                    'Browse and open a file from this device',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 13,
-                                      color: MyColors.textSecondary,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 16),
-                                  SizedBox(
-                                    height: 40,
-                                    child: ElevatedButton(
-                                      onPressed: _pickDocuments,
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: MyColors.primary,
-                                        foregroundColor: Colors.white,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 24,
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(999),
-                                        ),
-                                      ),
-                                      child: const Text(
-                                        'Browse files',
-                                        style: TextStyle(
-                                          fontSize: 13,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  const Text(
-                                    'Supported: PDF',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: MyColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'Supported: PDF, DOC, DOCX',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: MyColors.textSecondary,
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    const Divider(height: 1),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 8, 20, 4),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: const [
-                          Text(
-                            'Recent files',
+                      const SizedBox(height: 24),
+                      const Divider(height: 1),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Recent files',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: MyColors.textPrimary,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      if (_documents.isEmpty)
+                        const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 16),
+                          child: Text(
+                            'No recent files',
                             style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w600,
-                              color: MyColors.textPrimary,
+                              fontSize: 13,
+                              color: MyColors.textSecondary,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: _documents.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'No recent files',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color: MyColors.textSecondary,
+                        )
+                      else
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          padding: const EdgeInsets.only(bottom: 4),
+                          itemCount:
+                              _documents.length > 10 ? 10 : _documents.length,
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 8),
+                          itemBuilder: (context, index) {
+                            final file = _documents.reversed.toList()[index];
+                            return ListTile(
+                              onTap: () => _openDocument(file),
+                              contentPadding: EdgeInsets.zero,
+                              leading: Container(
+                                width: 40,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  color: MyColors.softGrey,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Icon(
+                                  _getIconForFile(file),
+                                  color: MyColors.primary,
                                 ),
                               ),
-                            )
-                          : ListView.separated(
-                              padding: const EdgeInsets.fromLTRB(
-                                  20, 4, 20, 20),
-                              itemCount: _documents.length > 10
-                                  ? 10
-                                  : _documents.length,
-                              separatorBuilder: (context, index) =>
-                                  const SizedBox(height: 8),
-                              itemBuilder: (context, index) {
-                                final file =
-                                    _documents.reversed.toList()[index];
-                                return ListTile(
-                                  onTap: () => _openDocument(file),
-                                  leading: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: MyColors.softGrey,
-                                      borderRadius:
-                                          BorderRadius.circular(12),
-                                    ),
-                                    child: Icon(
-                                      _getIconForFile(file),
-                                      color: MyColors.primary,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    file.name,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: MyColors.textPrimary,
-                                    ),
-                                  ),
-                                  trailing: const Icon(
-                                    Icons.arrow_forward_ios,
-                                    size: 14,
-                                    color: MyColors.textSecondary,
-                                  ),
-                                );
-                              },
-                            ),
-                    ),
-                  ],
+                              title: Text(
+                                file.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: MyColors.textPrimary,
+                                ),
+                              ),
+                              trailing: const Icon(
+                                Icons.arrow_forward_ios,
+                                size: 14,
+                                color: MyColors.textSecondary,
+                              ),
+                            );
+                          },
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),

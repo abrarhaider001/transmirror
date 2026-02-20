@@ -57,6 +57,7 @@ dependencies:
   speech_to_text: ^7.3.0
   file_selector: ^1.0.4
   easy_pdf_viewer: ^1.0.7
+  docx_file_viewer: ^1.0.1
   # image_gallery_saver: ^2.0.3
   # flutter_overlay_window: ^0.5.0
   # voice_to_text: ^1.0.3

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:docx_file_viewer/docx_file_viewer.dart';
 import 'package:easy_pdf_viewer/easy_pdf_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
@@ -21,30 +22,83 @@ class DocumentViewerPage extends StatefulWidget {
 
 class _DocumentViewerPageState extends State<DocumentViewerPage> {
   bool _isLoading = true;
-  late PDFDocument _document;
+  PDFDocument? _pdfDocument;
+  late final bool _isPdf;
+  late final bool _isDocx;
 
   @override
   void initState() {
     super.initState();
-    _loadDocument();
+    final path = widget.filePath.toLowerCase();
+    _isPdf = path.endsWith('.pdf');
+    _isDocx = path.endsWith('.docx');
+
+    if (_isPdf) {
+      _loadPdfDocument();
+    } else {
+      _isLoading = false;
+    }
   }
 
-  Future<void> _loadDocument() async {
+  Future<void> _loadPdfDocument() async {
     try {
       final file = File(widget.filePath);
-      _document = await PDFDocument.fromFile(file);
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-        });
-      }
+      final document = await PDFDocument.fromFile(file);
+      if (!mounted) return;
+      setState(() {
+        _pdfDocument = document;
+        _isLoading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+      });
     }
+  }
+
+  Widget _buildContent() {
+    if (_isPdf) {
+      if (_isLoading || _pdfDocument == null) {
+        return const Center(
+          child: CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+              MyColors.primary,
+            ),
+          ),
+        );
+      }
+
+      return PDFViewer(
+        document: _pdfDocument!,
+        lazyLoad: false,
+        scrollDirection: Axis.vertical,
+        showNavigation: false,
+        showPicker: false,
+        showIndicator: false,
+      );
+    }
+
+    if (_isDocx) {
+      return DocxView.file(
+        File(widget.filePath),
+        config: DocxViewConfig(
+          enableZoom: false,
+          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 24),
+          backgroundColor: Colors.white,
+        ),
+      );
+    }
+
+    return const Center(
+      child: Text(
+        'Unsupported file type',
+        style: TextStyle(
+          fontSize: 14,
+          color: MyColors.textSecondary,
+        ),
+      ),
+    );
   }
 
   @override
@@ -74,19 +128,12 @@ class _DocumentViewerPageState extends State<DocumentViewerPage> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(24),
-                  child: _isLoading
-                      ? const Center(
-                          child: CircularProgressIndicator(
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              MyColors.primary,
-                            ),
-                          ),
-                        )
-                      : PDFViewer(
-                          document: _document,
-                          lazyLoad: false,
-                          zoomSteps: 1,
-                        ),
+                  child: InteractiveViewer(
+                    panEnabled: false,
+                    minScale: 1.0,
+                    maxScale: 3.0,
+                    child: _buildContent(),
+                  ),
                 ),
               ),
             ),
@@ -96,4 +143,3 @@ class _DocumentViewerPageState extends State<DocumentViewerPage> {
     );
   }
 }
-

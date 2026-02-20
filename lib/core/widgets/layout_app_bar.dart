@@ -57,13 +57,22 @@ class LayoutPagesAppBar extends StatelessWidget {
                  const SizedBox(width: 40, height: 40),
             ],
           ),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: MyTextTheme.lightTextTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              fontSize: 16,
-            ) ?? const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 60),
+            child: Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: MyTextTheme.lightTextTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ) ??
+                  const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
           ),
         ],
       ),
