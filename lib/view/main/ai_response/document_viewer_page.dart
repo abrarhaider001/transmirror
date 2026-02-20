@@ -71,21 +71,25 @@ class _DocumentViewerPageState extends State<DocumentViewerPage> {
 
       return PDFViewer(
         document: _pdfDocument!,
-        lazyLoad: false,
+        lazyLoad: true,
         scrollDirection: Axis.vertical,
         showNavigation: false,
         showPicker: false,
         showIndicator: false,
+        backgroundColor: MyColors.softGrey,
       );
     }
 
     if (_isDocx) {
-      return DocxView.file(
-        File(widget.filePath),
-        config: DocxViewConfig(
-          enableZoom: false,
-          padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 24),
-          backgroundColor: Colors.white,
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: DocxView.file(
+          File(widget.filePath),
+          config: DocxViewConfig(
+            enableZoom: false,
+            padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+            backgroundColor: MyColors.softGrey,
+          ),
         ),
       );
     }
@@ -114,17 +118,17 @@ class _DocumentViewerPageState extends State<DocumentViewerPage> {
             ),
             Expanded(
               child: Container(
-                margin: const EdgeInsets.fromLTRB(20, 10, 20, 20),
+                // margin: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.transparent,
                   borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: MyColors.primary.withOpacity(0.1),
-                      blurRadius: 15,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //     color: MyColors.primary.withOpacity(0.1),
+                  //     blurRadius: 15,
+                  //     offset: const Offset(0, 8),
+                  //   ),
+                  // ],
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(24),
