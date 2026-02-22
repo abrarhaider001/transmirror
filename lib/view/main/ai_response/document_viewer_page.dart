@@ -118,17 +118,9 @@ class _DocumentViewerPageState extends State<DocumentViewerPage> {
             ),
             Expanded(
               child: Container(
-                // margin: const EdgeInsets.fromLTRB(20, 10, 20, 20),
                 decoration: BoxDecoration(
                   color: Colors.transparent,
                   borderRadius: BorderRadius.circular(24),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //     color: MyColors.primary.withOpacity(0.1),
-                  //     blurRadius: 15,
-                  //     offset: const Offset(0, 8),
-                  //   ),
-                  // ],
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(24),

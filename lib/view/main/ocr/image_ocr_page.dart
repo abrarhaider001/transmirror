@@ -33,6 +33,14 @@ class _ImageOcrPageState extends State<ImageOcrPage> {
   String? _extractedText;
   String? _detectedLanguage;
 
+  void _handleScanStarted() {
+    setState(() {
+      _isProcessing = true;
+      _extractedText = null;
+      _detectedLanguage = null;
+    });
+  }
+
   Future<void> _handleTextSelected(String text) async {
     if (text.trim().isEmpty) {
       setState(() {
@@ -169,12 +177,7 @@ class _ImageOcrPageState extends State<ImageOcrPage> {
                   // Swipe Text Selector
           SwipeTextSelector(
             image: File(widget.imagePath),
-            onScanStarted: () {
-              setState(() {
-                _detectedLanguage = null;
-                _extractedText = null;
-              });
-            },
+            onScanStarted: _handleScanStarted,
             onTextSelected: _handleTextSelected,
             detectedLanguage: _detectedLanguage != null ? _getLanguageName(_detectedLanguage!) : null,
             onCopyPressed: _handleCopy,

@@ -103,7 +103,7 @@ class _SwipeTextSelectorState extends State<SwipeTextSelector> {
                   child: AspectRatio(
                     aspectRatio: _aspectRatio,
                     child: Listener(
-                      onPointerDown: (_) => widget.onScanStarted?.call(),
+                      onPointerUp: (_) => widget.onScanStarted?.call(),
                       child: SwipeImageOCR(
                         imageBytes: _imageBytes!,
                         onTextRead: (text) {
