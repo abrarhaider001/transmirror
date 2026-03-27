@@ -14,3 +14,6 @@ enum ChatMessageStatus { sending, sent, delivered, read, failed }
 enum VerificationStatus { unknown, pending, submitted, underReview, approved, rejected }
 
 enum TextSizes { small, medium, large }
+
+/// Home experience: solo tools vs shared duo features.
+enum AppMode { solo, duo }

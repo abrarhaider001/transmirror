@@ -10,6 +10,7 @@ import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/theme/theme.dart';
 import 'package:transmirror/core/utils/local_storage/storage_utility.dart';
 import 'package:transmirror/firebase_options.dart';
+import 'package:transmirror/view_model/home_mode_controller.dart';
 import 'package:transmirror/view/overlay/resizable_overlay.dart';
 
 Future<void> main() async {
@@ -36,6 +37,7 @@ Future<void> main() async {
   }
 
   await MyLocalStorage.init('app');
+  Get.put(HomeModeController(), permanent: true);
   runApp(const MyApp());
 }
 
