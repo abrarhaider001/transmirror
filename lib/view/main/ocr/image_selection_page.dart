@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/utils/popups/app_snackbar.dart';
 import 'package:transmirror/core/utils/theme/widget_themes/text_theme.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
 import 'package:transmirror/view/main/ai_response/document_viewer_page.dart';
@@ -59,12 +60,7 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
         Get.to(() => ImageOcrPage(imagePath: image.path));
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to pick image: $e',
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackBar.error('Failed to pick image: $e');
     }
   }
 
@@ -108,12 +104,7 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
         ),
       );
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to pick file: $e',
-        backgroundColor: Colors.red.withOpacity(0.1),
-        colorText: Colors.red,
-      );
+      AppSnackBar.error('Failed to pick file: $e');
     }
   }
 

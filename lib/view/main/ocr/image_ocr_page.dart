@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:google_mlkit_language_id/google_mlkit_language_id.dart';
 import 'package:transmirror/core/routes/app_routes.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/utils/popups/app_snackbar.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
 import 'package:transmirror/core/widgets/swipe_text_selector.dart';
 
@@ -72,7 +73,7 @@ class _ImageOcrPageState extends State<ImageOcrPage> {
     } catch (e) {
       debugPrint("Error identifying language: $e");
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error: $e")));
+        AppSnackBar.error('Error: $e', context: context);
       }
     } finally {
       if (mounted) {

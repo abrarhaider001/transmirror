@@ -6,7 +6,7 @@ import 'package:transmirror/core/routes/app_routes.dart';
 import 'package:transmirror/core/utils/local_storage/storage_utility.dart';
 import 'package:transmirror/core/utils/exceptions/exceptions.dart';
 import 'package:transmirror/core/utils/exceptions/firebase_auth_exceptions.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/utils/popups/app_snackbar.dart';
 
 class RegisterController extends GetxController {
   final formKey = GlobalKey<FormState>();
@@ -27,11 +27,8 @@ class RegisterController extends GetxController {
   Future<void> register() async {
     if (!(formKey.currentState?.validate() ?? false)) return;
     if (!termsAccepted.value) {
-      Get.snackbar(
-        'Required',
-        'Please accept the Terms and Conditions to proceed',
-        backgroundColor: MyColors.error.withOpacity(0.5),
-        colorText: Colors.white,
+      AppSnackBar.error(
+        'Please accept the Terms and Conditions to proceed.',
       );
       return;
     }
@@ -49,14 +46,12 @@ class RegisterController extends GetxController {
       );
       Get.offAllNamed(AppRoutes.home);
     } on MyFirebaseAuthException catch (e) {
-      final msg = e.message;
-      Get.snackbar('Signup failed', msg, backgroundColor: MyColors.error.withOpacity(0.5));
+      AppSnackBar.error(e.message);
     } on FirebaseAuthException catch (e) {
-      final msg = MyExceptions.fromCode(e.code).message;
-      Get.snackbar('Signup failed', msg, backgroundColor: MyColors.error.withOpacity(0.5));
+      AppSnackBar.error(MyExceptions.fromCode(e.code).message);
     } catch (e) {
       final msg = e is MyExceptions ? e.message : const MyExceptions().message;
-      Get.snackbar('Signup failed', msg, backgroundColor: MyColors.error.withOpacity(0.5));
+      AppSnackBar.error(msg);
     } finally {
       isLoading.value = false;
     }

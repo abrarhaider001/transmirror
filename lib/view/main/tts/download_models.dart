@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/utils/popups/app_snackbar.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
 
 class DownloadModelsPage extends StatefulWidget {
@@ -65,33 +66,33 @@ class _DownloadModelsPageState extends State<DownloadModelsPage> {
       _downloadingModels.add(code);
     });
 
+    final name = _getLanguageName(language);
+    if (mounted) {
+      AppSnackBar.info(
+        'Downloading $name model…',
+        context: context,
+      );
+    }
+
     try {
       final result = await _modelManager.downloadModel(code);
       if (result && mounted) {
         setState(() {
           _downloadedModels.add(code);
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              '${_getLanguageName(language)} model downloaded successfully',
-            ),
-          ),
+        AppSnackBar.success(
+          '$name model downloaded successfully.',
+          context: context,
         );
       } else if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Failed to download ${_getLanguageName(language)} model',
-            ),
-          ),
+        AppSnackBar.error(
+          'Could not download the $name model.',
+          context: context,
         );
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Error: $e')));
+        AppSnackBar.error('Error: $e', context: context);
       }
     } finally {
       if (mounted) {
@@ -143,10 +144,9 @@ class _DownloadModelsPageState extends State<DownloadModelsPage> {
         setState(() {
           _downloadedModels.remove(code);
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${_getLanguageName(language)} model deleted'),
-          ),
+        AppSnackBar.success(
+          '${_getLanguageName(language)} model removed.',
+          context: context,
         );
       }
     } catch (e) {

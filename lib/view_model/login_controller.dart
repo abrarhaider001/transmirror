@@ -8,7 +8,7 @@ import 'package:transmirror/core/utils/local_storage/storage_utility.dart';
 import 'package:transmirror/model/user_model.dart';
 import 'package:transmirror/core/utils/exceptions/exceptions.dart';
 import 'package:transmirror/core/utils/exceptions/firebase_auth_exceptions.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/utils/popups/app_snackbar.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -64,26 +64,12 @@ class LoginController extends GetxController {
       Get.offAllNamed(AppRoutes.home);
 
     } on MyFirebaseAuthException catch (e) {
-      final msg = e.message;
-      Get.snackbar(
-        'Login failed',
-        msg,
-        backgroundColor: MyColors.error.withOpacity(0.5),
-      );
+      AppSnackBar.error(e.message);
     } on FirebaseAuthException catch (e) {
-      final msg = MyExceptions.fromCode(e.code).message;
-      Get.snackbar(
-        'Login failed',
-        msg,
-        backgroundColor: MyColors.error.withOpacity(0.5),
-      );
+      AppSnackBar.error(MyExceptions.fromCode(e.code).message);
     } catch (e) {
       final msg = e is MyExceptions ? e.message : const MyExceptions().message;
-      Get.snackbar(
-        'Login failed',
-        msg,
-        backgroundColor: MyColors.error.withOpacity(0.5),
-      );
+      AppSnackBar.error(msg);
     } finally {
       isLoading.value = false;
     }

@@ -3,6 +3,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/utils/popups/app_snackbar.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
 import 'package:transmirror/core/widgets/widgets/tts_input_overlay.dart';
 import 'package:transmirror/core/widgets/widgets/tts_mode_selector.dart';
@@ -172,7 +173,7 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
         _isProcessing = false;
       });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+        AppSnackBar.error('Error: $e', context: context);
       }
     }
   }
