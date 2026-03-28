@@ -9,40 +9,84 @@ import 'package:transmirror/core/routes/app_routes.dart';
 
 class LoginForm extends StatelessWidget {
   final LoginController controller;
-   const LoginForm({super.key, required this.controller});
+  final bool darkAuth;
+  final String loginButtonLabel;
+  final bool showLoginLeadingIcon;
+
+  const LoginForm({
+    super.key,
+    required this.controller,
+    this.darkAuth = false,
+    this.loginButtonLabel = 'Login',
+    this.showLoginLeadingIcon = true,
+  });
+
+  TextStyle _labelStyle(BuildContext context) {
+    if (darkAuth) {
+      return const TextStyle(
+        color: Colors.white,
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+      );
+    }
+    return MyTextTheme.lightTextTheme.titleLarge!;
+  }
+
+  InputDecoration _fieldDeco({
+    required String hint,
+    Widget? prefix,
+    Widget? suffix,
+  }) {
+    if (darkAuth) {
+      return MyTextFormFieldTheme.authDarkInputDecoration(
+        hintText: hint,
+        prefixIcon: prefix,
+        suffixIcon: suffix,
+      );
+    }
+    return MyTextFormFieldTheme.lightInputDecoration(
+      hintText: hint,
+      prefixIcon: prefix,
+      suffixIcon: suffix,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final iconColor = darkAuth ? Colors.white70 : MyColors.primary;
+
     return Form(
       key: controller.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Email address', style: MyTextTheme.lightTextTheme.titleLarge),
+          Text('Email address', style: _labelStyle(context)),
           const SizedBox(height: 8),
           TextFormField(
             controller: controller.emailController,
             keyboardType: TextInputType.emailAddress,
-            decoration: MyTextFormFieldTheme.lightInputDecoration(
-              hintText: 'example123@gmail.com',
-              prefixIcon: const Icon(Icons.email_outlined, color: MyColors.primary),
+            style: darkAuth ? const TextStyle(color: Colors.white) : null,
+            decoration: _fieldDeco(
+              hint: 'example@email.com',
+              prefix: Icon(Icons.email_outlined, color: iconColor),
             ),
             validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
           ),
           const SizedBox(height: 20),
-          Text('Password', style: MyTextTheme.lightTextTheme.titleLarge),
+          Text('Password', style: _labelStyle(context)),
           const SizedBox(height: 8),
           Obx(
             () => TextFormField(
               controller: controller.passwordController,
               obscureText: controller.obscure.value,
-              decoration: MyTextFormFieldTheme.lightInputDecoration(
-                hintText: '••••••••',
-                prefixIcon: const Icon(Icons.lock_outline, color: MyColors.primary),
-                suffixIcon: IconButton(
+              style: darkAuth ? const TextStyle(color: Colors.white) : null,
+              decoration: _fieldDeco(
+                hint: '••••••••',
+                prefix: Icon(Icons.lock_outline, color: iconColor),
+                suffix: IconButton(
                   icon: Icon(
                     controller.obscure.value ? Icons.visibility_off : Icons.visibility,
-                    color: MyColors.primary,
+                    color: iconColor,
                   ),
                   onPressed: controller.toggleObscure,
                 ),
@@ -58,20 +102,47 @@ class LoginForm extends StatelessWidget {
                 final email = controller.emailController.text.trim();
                 Get.toNamed(AppRoutes.forgotPassword, arguments: {'email': email});
               },
-              child: const Text('Forgot Password?', style: TextStyle(color: MyColors.primary)),
+              child: Text(
+                'Forgot password?',
+                style: TextStyle(
+                  color: darkAuth ? MyColors.darkLink : MyColors.primary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 18),
           Obx(
             () => GradientElevatedButton(
               onPressed: controller.isLoading.value ? null : controller.login,
+              backgroundColor: darkAuth ? MyColors.darkLink : MyColors.primary,
+              borderColor: darkAuth ? MyColors.darkLink : MyColors.primary,
+              radius: 18,
+              height: 52,
               child: controller.isLoading.value
                   ? const SizedBox(
                       width: 24,
                       height: 24,
                       child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                     )
-                  : const Text('Login'),
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (showLoginLeadingIcon) ...[
+                          const Icon(Icons.person_outline, color: Colors.white, size: 22),
+                          const SizedBox(width: 10),
+                        ],
+                        Text(
+                          loginButtonLabel,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    ),
             ),
           ),
         ],
@@ -79,4 +150,3 @@ class LoginForm extends StatelessWidget {
     );
   }
 }
-

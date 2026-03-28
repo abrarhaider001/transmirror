@@ -15,10 +15,9 @@ import 'package:transmirror/view/overlay/resizable_overlay.dart';
 
 Future<void> main() async {
   var logger = Logger();
-    //firebase connection
   WidgetsFlutterBinding.ensureInitialized();
   await LauncherShortcuts.initialize();
-  
+
   LauncherShortcuts.shortcutStream.listen((String type) async {
     if (type == 'start_recording') {
       Get.offAllNamed(AppRoutes.speechToText);
@@ -44,10 +43,12 @@ Future<void> main() async {
 @pragma("vm:entry-point")
 void overlayMain() {
   WidgetsFlutterBinding.ensureInitialized();
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: ResizableOverlay(),
-  ));
+  runApp(
+    const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: ResizableOverlay(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -65,9 +66,16 @@ class MyApp extends StatelessWidget {
           selectionHandleColor: MyColors.primary,
         ),
       ),
+      darkTheme: MyAppTheme.darkTheme.copyWith(
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: MyColors.darkLink,
+          selectionColor: MyColors.darkLink.withOpacity(0.35),
+          selectionHandleColor: MyColors.darkLink,
+        ),
+      ),
+      themeMode: ThemeMode.system,
       initialRoute: AppRoutes.splash,
       getPages: AppPages.pages,
-
     );
   }
 }

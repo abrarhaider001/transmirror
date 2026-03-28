@@ -21,9 +21,17 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    final bg = backgroundColor ??
+        (isDark ? MyColors.darkSurface : MyColors.primary);
+    final selected = selectedItemColor ?? (isDark ? MyColors.darkLink : MyColors.white);
+    final unselected =
+        unselectedItemColor ?? (isDark ? MyColors.darkOnSurfaceMuted : const Color(0xFFCBD5E1));
+
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor ?? MyColors.primaryBackground,
+        color: bg,
         boxShadow: const [
           BoxShadow(
             color: Color(0x1F000000),
@@ -42,68 +50,69 @@ class CustomBottomNavBar extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: List.generate(items.length, (index) {
-              final item = items[index];
-              final isSelected = index == currentIndex;
-              final color = isSelected
-                  ? (selectedItemColor ?? MyColors.primary)
-                  : (unselectedItemColor ?? MyColors.textSecondary);
-          
-              return InkWell(
-                onTap: () => onTap(index),
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                child: SizedBox(
-                  width: 80,
-                  height: 60,
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Positioned(
-                        top: 2,
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          width: isSelected ? 40 : 0,
-                          height: isSelected ? 2 : 0,
-                          decoration: BoxDecoration(
-                            color: isSelected ? (selectedItemColor ?? MyColors.textPrimary) : Colors.transparent,
-                            borderRadius: BorderRadius.circular(6),
+                final item = items[index];
+                final isSelected = index == currentIndex;
+                final color = isSelected ? selected : unselected;
+
+                return InkWell(
+                  onTap: () => onTap(index),
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  child: SizedBox(
+                    width: 80,
+                    height: 60,
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Positioned(
+                          top: 2,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 200),
+                            width: isSelected ? 40 : 0,
+                            height: isSelected ? 2 : 0,
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? selected
+                                  : Colors.transparent,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
                           ),
                         ),
-                      ),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconTheme(
-                            data: IconThemeData(
-                              color: color,
-                              size: isSelected ? 20 : 22,
-                            ),
-                            child: isSelected
-                                ? (item.activeIcon)
-                                : item.icon,
-                          ),
-                          if (item.label != null) ...[
-                            const SizedBox(height: 4),
-                            Text(
-                              item.label!,
-                              style: TextStyle(
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconTheme(
+                              data: IconThemeData(
                                 color: color,
-                                fontSize: 12,
-                                fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
+                                size: isSelected ? 20 : 22,
                               ),
+                              child: isSelected
+                                  ? (item.activeIcon)
+                                  : item.icon,
                             ),
+                            if (item.label != null) ...[
+                              const SizedBox(height: 4),
+                              Text(
+                                item.label!,
+                                style: TextStyle(
+                                  color: color,
+                                  fontSize: 12,
+                                  fontWeight:
+                                      isSelected ? FontWeight.w600 : FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ],
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }),
+                );
+              }),
+            ),
           ),
-                ),
         ),
-    ),
+      ),
     );
   }
 }

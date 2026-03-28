@@ -18,4 +18,18 @@ class MyAppBarTheme {
       statusBarBrightness: Brightness.light,
     ),
   );
+
+  static const darkAppBarTheme = AppBarTheme(
+    elevation: 0,
+    centerTitle: true,
+    backgroundColor: MyColors.darkBackground,
+    foregroundColor: MyColors.darkOnBackground,
+    iconTheme: IconThemeData(color: MyColors.darkOnBackground, size: 18.0),
+    actionsIconTheme: IconThemeData(color: MyColors.darkOnBackground, size: 18.0),
+    systemOverlayStyle: SystemUiOverlayStyle(
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.dark,
+    ),
+  );
 }

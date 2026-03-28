@@ -5,6 +5,7 @@ import 'package:transmirror/core/utils/constants/colors.dart';
 class AuthTopBar extends StatelessWidget {
   final bool showBack;
   final VoidCallback? onBack;
+
   const AuthTopBar({super.key, this.showBack = true, this.onBack});
 
   @override
@@ -16,15 +17,20 @@ class AuthTopBar extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
-              onTap: () => Get.back(),
+              onTap: onBack ?? () => Get.back(),
               child: Ink(
-                width: 40,
-                height: 40,
-                decoration: const BoxDecoration(
-                  color: MyColors.grey,
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1),
                   shape: BoxShape.circle,
+                  border: Border.all(color: MyColors.darkOutline),
                 ),
-                child: const Icon(Icons.arrow_back, color: Colors.black),
+                child: Icon(
+                  Icons.arrow_back,
+                  color: MyColors.darkOnBackground,
+                  size: 22,
+                ),
               ),
             ),
           ),

@@ -185,4 +185,8 @@ class MyTexts {
   // -- Dashboard 1
   static const String popularProducts = "Popular Products";
   static const String homeAppbarTitle = "Good day for shopping";
+
+  // -- Legal (auth footer; replace with production URLs) --
+  static const String privacyPolicyUrl = 'https://flutter.dev';
+  static const String termsUrl = 'https://flutter.dev';
 }

@@ -27,6 +27,30 @@ class MyTextFormFieldTheme {
     ),
   );
 
+  static InputDecorationTheme darkInputDecorationTheme = InputDecorationTheme(
+    prefixIconColor: MyColors.darkOnSurfaceMuted,
+    floatingLabelStyle: const TextStyle(color: MyColors.darkLink),
+    fillColor: MyColors.darkFieldFill,
+    filled: true,
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
+      borderSide: const BorderSide(width: 1, color: MyColors.darkOutline),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
+      borderSide: const BorderSide(width: 1, color: MyColors.darkOutline),
+    ),
+    disabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
+      borderSide: const BorderSide(width: 1, color: MyColors.darkOutline),
+    ),
+    hintStyle: TextStyle(color: MyColors.darkOnSurfaceMuted.withOpacity(0.85)),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
+      borderSide: const BorderSide(width: 2, color: MyColors.darkLink),
+    ),
+  );
+
   static InputDecoration lightInputDecoration({
     String? labelText,
     String? hintText,
@@ -58,6 +82,37 @@ class MyTextFormFieldTheme {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
         borderSide: const BorderSide(width: 2, color: MyColors.primary),
+      ),
+    );
+  }
+
+  /// Dark fields on auth screens ([MyColors] tokens; same palette as [MyAppTheme.darkTheme]).
+  static InputDecoration authDarkInputDecoration({
+    String? hintText,
+    Widget? prefixIcon,
+    Widget? suffixIcon,
+  }) {
+    final r = BorderRadius.circular(MySizes.borderRadiusMd);
+    return InputDecoration(
+      hintText: hintText,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      prefixIconColor: Colors.white70,
+      suffixIconColor: Colors.white70,
+      filled: true,
+      fillColor: MyColors.darkFieldFill,
+      hintStyle: TextStyle(color: MyColors.darkOnSurfaceMuted.withOpacity(0.9)),
+      border: OutlineInputBorder(
+        borderRadius: r,
+        borderSide: const BorderSide(color: MyColors.darkOutline),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: r,
+        borderSide: const BorderSide(color: MyColors.darkOutline),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: r,
+        borderSide: const BorderSide(color: MyColors.darkLink, width: 2),
       ),
     );
   }

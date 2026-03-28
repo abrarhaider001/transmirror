@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
 
+/// App bar using theme colors. Pass [gradient] only if a gradient bar is required (rare).
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final bool showBack;
@@ -27,30 +27,35 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final useGradient =
-        gradient ??
-        const LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: [MyColors.primary, MyColors.primary],
-        );
+    final scheme = Theme.of(context).colorScheme;
+    final fg = titleColor ?? scheme.onPrimary;
+    final bg = backgroundColor ?? scheme.primary;
+
     return AppBar(
       title: Padding(
-        padding: const EdgeInsets.only(right:10.0),
-        child: Text(title, style: TextStyle(color: titleColor ?? Colors.white, fontSize: 16, fontFamily: 'Poppins')),
+        padding: const EdgeInsets.only(right: 10.0),
+        child: Text(
+          title,
+          style: TextStyle(
+            color: fg,
+            fontSize: 16,
+            fontFamily: 'Poppins',
+          ),
+        ),
       ),
       leading: showBack
           ? IconButton(
               onPressed: onBack ?? Get.back,
-              icon: Icon(Icons.arrow_back, color: titleColor ?? Colors.white),
+              icon: Icon(Icons.arrow_back, color: fg),
             )
           : null,
       actions: actions,
-      backgroundColor: backgroundColor ?? Colors.transparent,
       elevation: 0,
-      flexibleSpace: Container(
-        decoration: BoxDecoration(gradient: useGradient),
-      ),
+      backgroundColor: gradient != null ? Colors.transparent : bg,
+      foregroundColor: fg,
+      flexibleSpace: gradient != null
+          ? Container(decoration: BoxDecoration(gradient: gradient))
+          : null,
     );
   }
 }
