@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/image_strings.dart';
 import 'package:transmirror/core/utils/theme/widget_themes/button_theme.dart';
@@ -75,7 +76,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                                 decoration: MyTextFormFieldTheme.authDarkInputDecoration(
                                   hintText: 'example123@gmail.com',
                                   prefixIcon: const Icon(
-                                    Icons.email_outlined,
+                                    Iconsax.sms,
                                     color: Colors.white70,
                                   ),
                                 ),

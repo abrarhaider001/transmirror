@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 
 /// App bar using theme colors. Pass [gradient] only if a gradient bar is required (rare).
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -46,7 +47,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: showBack
           ? IconButton(
               onPressed: onBack ?? Get.back,
-              icon: Icon(Icons.arrow_back, color: fg),
+              icon: Icon(Iconsax.arrow_left, color: fg),
             )
           : null,
       actions: actions,

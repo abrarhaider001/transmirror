@@ -25,7 +25,7 @@ class ProfileSocialActionsRow extends StatelessWidget {
           Expanded(
             child: _SocialTile(
               label: 'Share',
-              icon: Icons.ios_share_rounded,
+              icon: Iconsax.share,
               onTap: onShare,
             ),
           ),
@@ -33,7 +33,7 @@ class ProfileSocialActionsRow extends StatelessWidget {
           Expanded(
             child: _SocialTile(
               label: 'Rate us',
-              icon: Icons.star_outline_rounded,
+              icon: Iconsax.star,
               onTap: onRate,
             ),
           ),

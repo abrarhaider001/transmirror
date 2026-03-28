@@ -31,9 +31,9 @@ class _SplashState extends State<Splash> {
     // final loggedFlag = MyLocalStorage.instance().readData<dynamic>('isUserLoggedIn') as bool?;
     // final isUserLoggedIn = loggedFlag ?? false;
     // Get.offAllNamed(isUserLoggedIn ? AppRoutes.home : AppRoutes.login);
-    Get.offAllNamed(AppRoutes.home);
-
+    Get.offAllNamed(AppRoutes.login);
   }
+
   @override
   Widget build(BuildContext context) {
     final width = MyDeviceUtils.getScreenWidth(context);

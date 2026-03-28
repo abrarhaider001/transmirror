@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/theme/widget_themes/button_theme.dart';
 import 'package:transmirror/core/utils/theme/widget_themes/text_field_theme.dart';
@@ -68,7 +69,7 @@ class LoginForm extends StatelessWidget {
             style: darkAuth ? const TextStyle(color: Colors.white) : null,
             decoration: _fieldDeco(
               hint: 'example@email.com',
-              prefix: Icon(Icons.email_outlined, color: iconColor),
+              prefix: Icon(Iconsax.sms, color: iconColor),
             ),
             validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
           ),
@@ -82,10 +83,10 @@ class LoginForm extends StatelessWidget {
               style: darkAuth ? const TextStyle(color: Colors.white) : null,
               decoration: _fieldDeco(
                 hint: '••••••••',
-                prefix: Icon(Icons.lock_outline, color: iconColor),
+                prefix: Icon(Iconsax.lock, color: iconColor),
                 suffix: IconButton(
                   icon: Icon(
-                    controller.obscure.value ? Icons.visibility_off : Icons.visibility,
+                    controller.obscure.value ? Iconsax.eye_slash : Iconsax.eye,
                     color: iconColor,
                   ),
                   onPressed: controller.toggleObscure,
@@ -130,7 +131,7 @@ class LoginForm extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (showLoginLeadingIcon) ...[
-                          const Icon(Icons.person_outline, color: Colors.white, size: 22),
+                          const Icon(Iconsax.user, color: Colors.white, size: 22),
                           const SizedBox(width: 10),
                         ],
                         Text(

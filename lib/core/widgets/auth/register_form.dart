@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/theme/widget_themes/button_theme.dart';
 import 'package:transmirror/core/utils/theme/widget_themes/text_field_theme.dart';
@@ -63,7 +64,7 @@ class RegisterForm extends StatelessWidget {
             style: darkAuth ? const TextStyle(color: Colors.white) : null,
             decoration: _fieldDeco(
               hint: 'John Doe',
-              prefix: Icon(Icons.person_outline, color: iconColor),
+              prefix: Icon(Iconsax.user, color: iconColor),
             ),
             validator: (v) {
               if (v == null || v.isEmpty) return 'Required';
@@ -81,7 +82,7 @@ class RegisterForm extends StatelessWidget {
             style: darkAuth ? const TextStyle(color: Colors.white) : null,
             decoration: _fieldDeco(
               hint: 'example123@gmail.com',
-              prefix: Icon(Icons.email_outlined, color: iconColor),
+              prefix: Icon(Iconsax.sms, color: iconColor),
             ),
             validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
           ),
@@ -96,12 +97,12 @@ class RegisterForm extends StatelessWidget {
               style: darkAuth ? const TextStyle(color: Colors.white) : null,
               decoration: _fieldDeco(
                 hint: '••••••••',
-                prefix: Icon(Icons.lock_outline, color: iconColor),
+                prefix: Icon(Iconsax.lock, color: iconColor),
                 suffix: IconButton(
                   icon: Icon(
                     controller.obscure1.value
-                        ? Icons.visibility_off
-                        : Icons.visibility,
+                        ? Iconsax.eye_slash
+                        : Iconsax.eye,
                     color: iconColor,
                   ),
                   onPressed: controller.toggleObscure1,
@@ -120,12 +121,12 @@ class RegisterForm extends StatelessWidget {
               style: darkAuth ? const TextStyle(color: Colors.white) : null,
               decoration: _fieldDeco(
                 hint: '••••••••',
-                prefix: Icon(Icons.lock_outline, color: iconColor),
+                prefix: Icon(Iconsax.lock, color: iconColor),
                 suffix: IconButton(
                   icon: Icon(
                     controller.obscure2.value
-                        ? Icons.visibility_off
-                        : Icons.visibility,
+                        ? Iconsax.eye_slash
+                        : Iconsax.eye,
                     color: iconColor,
                   ),
                   onPressed: controller.toggleObscure2,

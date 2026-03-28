@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 
 /// Centered logo, title, and subtitle for auth screens — uses [MyColors] dark tokens.
@@ -27,7 +28,7 @@ class AuthBrandHeader extends StatelessWidget {
           height: logoHeight,
           fit: BoxFit.contain,
           errorBuilder: (context, error, stackTrace) => Icon(
-            Icons.star_rounded,
+            Iconsax.star_1,
             size: logoHeight * 0.6,
             color: MyColors.darkOnBackground,
           ),

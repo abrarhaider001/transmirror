@@ -112,11 +112,11 @@ class _AiResponsePageState extends State<AiResponsePage> {
 
   IconData _getIconForFile(XFile file) {
     final name = file.name.toLowerCase();
-    if (name.endsWith('.pdf')) return Icons.picture_as_pdf;
+    if (name.endsWith('.pdf')) return Iconsax.document_text;
     if (name.endsWith('.doc') || name.endsWith('.docx')) {
-      return Icons.description;
+      return Iconsax.document;
     }
-    return Icons.insert_drive_file;
+    return Iconsax.folder;
   }
 
   @override
@@ -193,7 +193,7 @@ class _AiResponsePageState extends State<AiResponsePage> {
                                 ],
                               ),
                               child: const Icon(
-                                Icons.cloud_upload_outlined,
+                                Iconsax.cloud_add,
                                 color: MyColors.primary,
                                 size: 38,
                               ),
@@ -319,7 +319,7 @@ class _AiResponsePageState extends State<AiResponsePage> {
                                 ),
                               ),
                               trailing: const Icon(
-                                Icons.arrow_forward_ios,
+                                Iconsax.arrow_right_3,
                                 size: 14,
                                 color: MyColors.textSecondary,
                               ),

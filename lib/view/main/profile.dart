@@ -249,12 +249,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       onTap: () => Get.toNamed(AppRoutes.privacyPolicy),
                     ),
                     ProfileTile(
-                      icon: Icons.downloading_sharp,
+                      icon: Iconsax.document_download,
                       label: 'Download language Models',
                       onTap: () => Get.toNamed(AppRoutes.downloadModels),
                     ),
                     ProfileTile(
-                      icon: Icons.shortcut_outlined,
+                      icon: Iconsax.flash_1,
                       label: 'Launcher Shortcuts',
                       trailing: SizedBox(
                         height: 24,

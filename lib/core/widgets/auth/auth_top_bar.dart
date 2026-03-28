@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 
 class AuthTopBar extends StatelessWidget {
@@ -27,7 +28,7 @@ class AuthTopBar extends StatelessWidget {
                   border: Border.all(color: MyColors.darkOutline),
                 ),
                 child: Icon(
-                  Icons.arrow_back,
+                  Iconsax.arrow_left,
                   color: MyColors.darkOnBackground,
                   size: 22,
                 ),

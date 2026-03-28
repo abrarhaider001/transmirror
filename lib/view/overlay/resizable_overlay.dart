@@ -120,7 +120,7 @@ class _ResizableOverlayState extends State<ResizableOverlay> {
             top: 180,
             right: 20,
             child: _buildActionButton(
-              icon: Icons.close,
+              icon: Iconsax.close_circle,
               onTap: () async {
                 await FlutterOverlayWindow.closeOverlay();
               },

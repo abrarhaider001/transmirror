@@ -256,7 +256,7 @@ class _DownloadModelsPageState extends State<DownloadModelsPage> {
                             GestureDetector(
                               onTap: () => _downloadModel(language),
                               child: const Icon(
-                                Icons.downloading_sharp,
+                                Iconsax.document_download,
                                 color: MyColors.primary,
                                 size: 24,
                               ),

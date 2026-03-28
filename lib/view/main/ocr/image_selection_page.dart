@@ -3,6 +3,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
@@ -141,7 +142,7 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
                   children: [
                     _buildOptionCard(
                       index: 0,
-                      icon: Icons.photo_camera_back_outlined,
+                      icon: Iconsax.camera,
                       title: 'Start with a photo',
                       subtitle:
                           'Snap a picture to extract text from the world around you.',
@@ -149,7 +150,7 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
                     const SizedBox(height: 16),
                     _buildOptionCard(
                       index: 1,
-                      icon: Icons.photo_outlined,
+                      icon: Iconsax.gallery,
                       title: 'Picture perfect',
                       subtitle:
                           'Try using photos from your gallery to analyse complex documents.',
@@ -157,7 +158,7 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
                     const SizedBox(height: 16),
                     _buildOptionCard(
                       index: 2,
-                      icon: Icons.description_outlined,
+                      icon: Iconsax.document,
                       title: 'Pick a document',
                       subtitle:
                           'Choose a PDF or Word document from your device.',

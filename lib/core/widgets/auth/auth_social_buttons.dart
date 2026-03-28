@@ -73,7 +73,7 @@ class ContinueWithGoogleButton extends StatelessWidget {
           filterQuality: FilterQuality.high,
           errorBuilder: (context, error, stackTrace) {
             return Icon(
-              Icons.g_mobiledata_rounded,
+              Iconsax.global,
               size: 28,
               color: MyColors.authPillLightFg,
             );

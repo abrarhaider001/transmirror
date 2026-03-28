@@ -16,7 +16,7 @@ class TextNotePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () => Get.toNamed(AppRoutes.createNote),
         backgroundColor: MyColors.primary,
-        child: const Icon(Icons.add, color: Colors.white),
+        child: const Icon(Iconsax.add, color: Colors.white),
       ),
       body: SafeArea(
         child: Column(
@@ -153,7 +153,7 @@ class _NoteCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const Icon(Icons.more_horiz, color: MyColors.textSecondary),
+              const Icon(Iconsax.more, color: MyColors.textSecondary),
             ],
           ),
           const SizedBox(height: 12),

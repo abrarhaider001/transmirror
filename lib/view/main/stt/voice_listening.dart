@@ -304,7 +304,7 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
                   ),
                   IconButton(
                     onPressed: () => Get.back(),
-                    icon: const Icon(Icons.close, color: Colors.grey),
+                    icon: const Icon(Iconsax.close_circle, color: Colors.grey),
                   ),
                 ],
               ),
