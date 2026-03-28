@@ -162,6 +162,9 @@ class MyTexts {
 
   // -- Profile Screen - Text
   static const String tProfile = "Profile";
+  static const String tAccountSettings = "Account settings";
+  static const String tAddFriends = "Add Friends";
+  static const String tDarkMode = "Dark mode";
   static const String tEditProfile = "Edit Profile";
   static const String tLogoutDialogHeading = "Logout";
   static const String tProfileHeading = "Coding with T";
@@ -189,4 +192,10 @@ class MyTexts {
   // -- Legal (auth footer; replace with production URLs) --
   static const String privacyPolicyUrl = 'https://flutter.dev';
   static const String termsUrl = 'https://flutter.dev';
+
+  /// Play Store / App Store listing (Rate us). Replace with your app id.
+  static const String storeListingUrl = 'https://flutter.dev';
+
+  /// Social link (Follow us).
+  static const String socialFollowUrl = 'https://flutter.dev';
 }

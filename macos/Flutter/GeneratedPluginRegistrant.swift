@@ -16,6 +16,7 @@ import flutter_tts
 import gal
 import just_audio
 import path_provider_foundation
+import share_plus
 import speech_to_text
 import sqflite_darwin
 import supertonic_flutter
@@ -33,6 +34,7 @@ func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   GalPlugin.register(with: registry.registrar(forPlugin: "GalPlugin"))
   JustAudioPlugin.register(with: registry.registrar(forPlugin: "JustAudioPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
+  SharePlusMacosPlugin.register(with: registry.registrar(forPlugin: "SharePlusMacosPlugin"))
   SpeechToTextPlugin.register(with: registry.registrar(forPlugin: "SpeechToTextPlugin"))
   SqflitePlugin.register(with: registry.registrar(forPlugin: "SqflitePlugin"))
   SupertonicFlutterPlugin.register(with: registry.registrar(forPlugin: "SupertonicFlutterPlugin"))

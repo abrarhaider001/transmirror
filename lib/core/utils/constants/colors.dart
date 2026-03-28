@@ -44,11 +44,7 @@ class MyColors {
   static const LinearGradient authBackgroundGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [
-      authGradientStart,
-      authGradientMid,
-      authGradientEnd,
-    ],
+    colors: [authGradientStart, authGradientMid, authGradientEnd],
     stops: [0.0, 0.48, 1.0],
   );
 

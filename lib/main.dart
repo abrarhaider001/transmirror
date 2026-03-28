@@ -11,6 +11,7 @@ import 'package:transmirror/core/utils/theme/theme.dart';
 import 'package:transmirror/core/utils/local_storage/storage_utility.dart';
 import 'package:transmirror/firebase_options.dart';
 import 'package:transmirror/view_model/home_mode_controller.dart';
+import 'package:transmirror/view_model/theme_mode_controller.dart';
 import 'package:transmirror/view/overlay/resizable_overlay.dart';
 
 Future<void> main() async {
@@ -37,6 +38,7 @@ Future<void> main() async {
 
   await MyLocalStorage.init('app');
   Get.put(HomeModeController(), permanent: true);
+  Get.put(ThemeModeController(), permanent: true);
   runApp(const MyApp());
 }
 
@@ -54,28 +56,38 @@ void overlayMain() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  static ThemeModeController _themeModeController() {
+    if (!Get.isRegistered<ThemeModeController>()) {
+      Get.put(ThemeModeController(), permanent: true);
+    }
+    return Get.find<ThemeModeController>();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'transmirror',
-      theme: MyAppTheme.lightTheme.copyWith(
-        textSelectionTheme: const TextSelectionThemeData(
-          cursorColor: MyColors.primary,
-          selectionColor: Color(0x80368d9c),
-          selectionHandleColor: MyColors.primary,
+    final themeModeController = _themeModeController();
+    return Obx(
+      () => GetMaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'transmirror',
+        theme: MyAppTheme.lightTheme.copyWith(
+          textSelectionTheme: const TextSelectionThemeData(
+            cursorColor: MyColors.primary,
+            selectionColor: Color(0x80368d9c),
+            selectionHandleColor: MyColors.primary,
+          ),
         ),
-      ),
-      darkTheme: MyAppTheme.darkTheme.copyWith(
-        textSelectionTheme: TextSelectionThemeData(
-          cursorColor: MyColors.darkLink,
-          selectionColor: MyColors.darkLink.withOpacity(0.35),
-          selectionHandleColor: MyColors.darkLink,
+        darkTheme: MyAppTheme.darkTheme.copyWith(
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: MyColors.darkLink,
+            selectionColor: MyColors.darkLink.withOpacity(0.35),
+            selectionHandleColor: MyColors.darkLink,
+          ),
         ),
+        themeMode: themeModeController.themeMode.value,
+        initialRoute: AppRoutes.splash,
+        getPages: AppPages.pages,
       ),
-      themeMode: ThemeMode.system,
-      initialRoute: AppRoutes.splash,
-      getPages: AppPages.pages,
     );
   }
 }
