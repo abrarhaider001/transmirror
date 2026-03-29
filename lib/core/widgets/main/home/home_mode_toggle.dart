@@ -3,7 +3,6 @@ import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/enums.dart';
 import 'package:transmirror/core/utils/constants/sizes.dart';
-import 'package:transmirror/core/utils/theme/widget_themes/text_theme.dart';
 
 /// Pill switch between Solo and Duo on the home screen.
 class HomeModeToggle extends StatelessWidget {
@@ -65,7 +64,7 @@ class _ModeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final baseStyle = MyTextTheme.lightTextTheme.labelLarge ?? const TextStyle();
+    final baseStyle = Theme.of(context).textTheme.labelLarge ?? const TextStyle();
 
     return Material(
       color: Colors.transparent,
@@ -97,7 +96,9 @@ class _ModeChip extends StatelessWidget {
               Icon(
                 icon,
                 size: 18,
-                color: isSelected ? MyColors.primary : MyColors.textTertiary,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
               const SizedBox(width: 8),
               Flexible(
@@ -109,7 +110,9 @@ class _ModeChip extends StatelessWidget {
                     fontWeight: FontWeight.w700,
                     fontSize: 14,
                     letterSpacing: 0.2,
-                    color: isSelected ? MyColors.primary : MyColors.textTertiary,
+                    color: isSelected
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
                 ),
               ),

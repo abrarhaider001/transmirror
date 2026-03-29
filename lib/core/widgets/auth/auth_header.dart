@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
-import 'package:transmirror/core/utils/theme/widget_themes/text_theme.dart';
 
 class AuthHeader extends StatelessWidget {
   final String title;
@@ -17,21 +14,19 @@ class AuthHeader extends StatelessWidget {
         Text(
           title,
           textAlign: TextAlign.left,
-          style: TextStyle(
-            fontFamily: GoogleFonts.poppins().fontFamily,
-            fontSize: 24.0,
-            color: MyColors.textPrimary,
+          style: Theme.of(context).textTheme.displayMedium?.copyWith(
+            fontSize: 24,
             fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onSurface,
           ),
         ),
         const SizedBox(height: 8),
         Text(
           subtitle,
           textAlign: TextAlign.left,
-          style: MyTextTheme.lightTextTheme.bodyMedium,
+          style: Theme.of(context).textTheme.bodyMedium,
         ),
       ],
     );
   }
 }
-

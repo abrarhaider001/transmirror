@@ -4,7 +4,6 @@ import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/routes/app_routes.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
-import 'package:transmirror/core/utils/theme/widget_themes/text_theme.dart';
 
 class TextNotePage extends StatelessWidget {
   const TextNotePage({super.key});
@@ -117,14 +116,14 @@ class _NoteCard extends StatelessWidget {
                   children: [
                     Text(
                       day,
-                      style: MyTextTheme.lightTextTheme.headlineSmall?.copyWith(
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 10,
                       ),
                     ),
                     Text(
                       date,
-                      style: MyTextTheme.lightTextTheme.titleLarge?.copyWith(
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -138,7 +137,7 @@ class _NoteCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: MyTextTheme.lightTextTheme.headlineMedium?.copyWith(
+                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
@@ -146,24 +145,27 @@ class _NoteCard extends StatelessWidget {
                     const SizedBox(height: 4),
                     Text(
                       time,
-                      style: MyTextTheme.lightTextTheme.labelSmall?.copyWith(
-                        color: MyColors.textSecondary,
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
                       ),
                     ),
                   ],
                 ),
               ),
-              const Icon(Iconsax.more, color: MyColors.textSecondary),
+              Icon(
+                Iconsax.more,
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ],
           ),
           const SizedBox(height: 12),
           Text(
             content,
-            style: MyTextTheme.lightTextTheme.bodyMedium?.copyWith(
-              color: MyColors.textSecondary,
-              height: 1.5,
-              fontSize: 12,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  height: 1.5,
+                  fontSize: 12,
+                ),
           ),
         ],
       ),

@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/sizes.dart';
-import 'package:transmirror/core/utils/theme/widget_themes/text_theme.dart';
 
 /// Gradient feature card with press scale and soft glow — used on the Solo home grid.
 class HomeFeatureTile extends StatefulWidget {
@@ -123,8 +122,7 @@ class _HomeFeatureTileState extends State<HomeFeatureTile> {
                           const Spacer(),
                           Text(
                             widget.title,
-                            style: (MyTextTheme.lightTextTheme.headlineSmall ?? const TextStyle())
-                                .copyWith(
+                            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                               fontWeight: FontWeight.w800,
                               fontSize: 17,
                               letterSpacing: -0.3,
@@ -135,8 +133,7 @@ class _HomeFeatureTileState extends State<HomeFeatureTile> {
                           const SizedBox(height: 6),
                           Text(
                             widget.subtitle,
-                            style: (MyTextTheme.lightTextTheme.bodySmall ?? const TextStyle())
-                                .copyWith(
+                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: MyColors.white.withOpacity(0.88),
                               fontSize: 12.5,
                               height: 1.35,

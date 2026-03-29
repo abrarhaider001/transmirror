@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/image_strings.dart';
+import 'package:transmirror/core/utils/constants/sizes.dart';
 
 /// Shared sizing for auth pill buttons.
 abstract final class AuthPillStyles {
-  static const double radius = 18;
-  static const double height = 54;
+  static const double radius = 14;
+  static const double height = 46;
 }
 
 /// White pill (e.g. Google) — same style as reference “Continue with Google”.
@@ -41,9 +42,9 @@ class AuthLightPillButton extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: MyColors.authPillLightFg,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  color: MyColors.authPillLightFg,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),
@@ -65,8 +66,8 @@ class ContinueWithGoogleButton extends StatelessWidget {
       onTap: onTap,
       label: 'Continue with Google',
       leading: SizedBox(
-        width: 26,
-        height: 26,
+        width: MySizes.iconSm,
+        height: MySizes.iconSm,
         child: Image.asset(
           MyImages.googleLogo,
           fit: BoxFit.contain,
@@ -105,7 +106,11 @@ class AuthSocialButtons extends StatelessWidget {
         _OutlinedAuthButton(
           label: 'Continue with Email',
           onTap: onEmail,
-          leading: Icon(Iconsax.sms, color: MyColors.darkOnBackground, size: 22),
+          leading: Icon(
+            Iconsax.sms,
+            color: MyColors.darkOnBackground,
+            size: 22,
+          ),
         ),
       ],
     );
@@ -146,9 +151,9 @@ class _OutlinedAuthButton extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      color: MyColors.darkOnBackground,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  color: MyColors.darkOnBackground,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ],
           ),

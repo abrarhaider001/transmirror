@@ -1,7 +1,7 @@
 class MySizes {
   // Border radius
   static const double borderRadius = 12.0;
-  
+
   // Padding and margin sizes
   static const double xs = 4.0;
   static const double sm = 10.0;
@@ -16,7 +16,8 @@ class MySizes {
   static const double iconLg = 32.0;
 
   // Font sizes
-  static const double fonMySizeSm = 14.0;
+  static const double fontSizeXs = 12.0;
+  static const double fonSizeSm = 14.0;
   static const double fontSizeMd = 16.0;
   static const double fontSizeLg = 18.0;
 
@@ -69,9 +70,9 @@ class MySizes {
   static const double loadingIndicatorSize = 36.0;
 
   // Grid view spacing
-  static const double gridViewSpacing = 16.0;  
-  
-  // Default view 
+  static const double gridViewSpacing = 16.0;
+
+  // Default view
   static const double defaultPagePadding = 16.0;
   static const double defaultBorderRadius = 12.0;
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/image_strings.dart';
-import 'package:transmirror/core/utils/theme/widget_themes/text_theme.dart';
 
 class HomeHeader extends StatelessWidget {
   const HomeHeader({super.key, required this.name});
@@ -34,7 +33,10 @@ class HomeHeader extends StatelessWidget {
               MyImages.user,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
-                return const Icon(Iconsax.user, color: MyColors.textSecondary);
+                return Icon(
+                  Iconsax.user,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                );
               },
             ),
           ),
@@ -45,25 +47,30 @@ class HomeHeader extends StatelessWidget {
               children: [
                 Text(
                   greet,
-                  style: (MyTextTheme.lightTextTheme.bodySmall ?? const TextStyle())
-                      .copyWith(color: MyColors.textSecondary, fontSize: 12),
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        fontSize: 12,
+                      ),
                 ),
                 Text(
                   name,
-                  style: (MyTextTheme.lightTextTheme.headlineMedium ?? const TextStyle())
-                      .copyWith(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ),
-          _buildIconButton(Iconsax.notification),
+          _buildIconButton(context, Iconsax.notification),
         ],
       ),
     );
   }
 
-  Widget _buildIconButton(IconData icon) {
+  Widget _buildIconButton(BuildContext context, IconData icon) {
     return Container(
       width: 48,
       height: 48,
@@ -79,7 +86,11 @@ class HomeHeader extends StatelessWidget {
           ),
         ],
       ),
-      child: Icon(icon, color: MyColors.textPrimary, size: 24),
+      child: Icon(
+        icon,
+        color: Theme.of(context).colorScheme.onSurface,
+        size: 24,
+      ),
     );
   }
 }

@@ -5,6 +5,12 @@ import '../../constants/sizes.dart';
 class MyTextFormFieldTheme {
   MyTextFormFieldTheme._();
 
+  /// Tighter fields on login / register / forgot-password.
+  static const EdgeInsets authContentPadding = EdgeInsets.symmetric(
+    horizontal: 14,
+    vertical: 10,
+  );
+
   static InputDecorationTheme lightInputDecorationTheme = InputDecorationTheme(
     prefixIconColor: MyColors.textSecondary,
     floatingLabelStyle: const TextStyle(color: MyColors.primary),
@@ -58,6 +64,8 @@ class MyTextFormFieldTheme {
     Widget? suffixIcon,
   }) {
     return InputDecoration(
+      isDense: true,
+      contentPadding: authContentPadding,
       labelText: labelText,
       hintText: hintText,
       prefixIcon: prefixIcon,
@@ -94,6 +102,8 @@ class MyTextFormFieldTheme {
   }) {
     final r = BorderRadius.circular(MySizes.borderRadiusMd);
     return InputDecoration(
+      isDense: true,
+      contentPadding: authContentPadding,
       hintText: hintText,
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,

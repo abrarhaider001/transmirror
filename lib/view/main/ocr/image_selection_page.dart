@@ -8,7 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/popups/app_snackbar.dart';
-import 'package:transmirror/core/utils/theme/widget_themes/text_theme.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
 import 'package:transmirror/view/main/ai_response/document_viewer_page.dart';
 import 'package:transmirror/view/main/ocr/image_ocr_page.dart';
@@ -141,6 +140,7 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _buildOptionCard(
+                      context,
                       index: 0,
                       icon: Iconsax.camera,
                       title: 'Start with a photo',
@@ -149,6 +149,7 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
                     ),
                     const SizedBox(height: 16),
                     _buildOptionCard(
+                      context,
                       index: 1,
                       icon: Iconsax.gallery,
                       title: 'Picture perfect',
@@ -157,6 +158,7 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
                     ),
                     const SizedBox(height: 16),
                     _buildOptionCard(
+                      context,
                       index: 2,
                       icon: Iconsax.document,
                       title: 'Pick a document',
@@ -199,7 +201,8 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
     );
   }
 
-  Widget _buildOptionCard({
+  Widget _buildOptionCard(
+    BuildContext context, {
     required int index,
     required IconData icon,
     required String title,
@@ -242,10 +245,10 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
                 children: [
                   Text(
                     title,
-                    style:
-                        MyTextTheme.lightTextTheme.headlineMedium?.copyWith(
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
+                          color: Theme.of(context).colorScheme.onSurface,
                         ) ??
                         const TextStyle(
                           fontSize: 20,
@@ -255,11 +258,10 @@ class _ImageSelectionPageState extends State<ImageSelectionPage> {
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                      height: 1.4,
-                    ),
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          height: 1.4,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
                   ),
                 ],
               ),

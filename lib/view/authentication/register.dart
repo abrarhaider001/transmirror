@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:transmirror/core/utils/constants/image_strings.dart';
 import 'package:transmirror/core/utils/popups/app_snackbar.dart';
 import 'package:transmirror/core/widgets/auth/auth_brand_header.dart';
 import 'package:transmirror/core/widgets/auth/auth_footer.dart';
 import 'package:transmirror/core/utils/theme/theme.dart';
+import 'package:transmirror/core/utils/constants/sizes.dart';
 import 'package:transmirror/core/widgets/auth/auth_gradient_background.dart';
-import 'package:transmirror/core/widgets/auth/auth_legal_footer.dart';
 import 'package:transmirror/core/widgets/auth/auth_social_buttons.dart';
 import 'package:transmirror/core/widgets/auth/auth_top_bar.dart';
 import 'package:transmirror/core/widgets/auth/register_form.dart';
@@ -62,12 +61,11 @@ class _RegisterPageState extends State<RegisterPage> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               AuthBrandHeader(
-                                logoAsset: MyImages.googleLogo,
                                 title: 'Create an account',
                                 subtitle:
                                     'This allows you to save your insights and personalize your journey.',
                               ),
-                              const SizedBox(height: 28),
+                              const SizedBox(height: MySizes.spaceBtwSections),
                               if (!_showEmailForm) ...[
                                 AuthSocialButtons(
                                   onGoogle: () => AppSnackBar.info(
@@ -76,7 +74,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   onEmail: () =>
                                       setState(() => _showEmailForm = true),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 24),
                                 AuthFooter(
                                   text: 'Already have an account? ',
                                   actionText: 'Log in',
@@ -99,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 24),
                                 AuthFooter(
                                   text: 'Already have an account? ',
                                   actionText: 'Log in',
@@ -111,12 +109,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       );
                     },
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(24, 8, 24, 12),
-                  child: AuthLegalFooter(
-                    prefix: 'By registering you agree to our ',
                   ),
                 ),
               ],

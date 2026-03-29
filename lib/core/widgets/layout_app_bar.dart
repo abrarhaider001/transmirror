@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
-import 'package:transmirror/core/utils/theme/widget_themes/text_theme.dart';
 
 class LayoutPagesAppBar extends StatelessWidget {
   final String title;
@@ -64,9 +63,10 @@ class LayoutPagesAppBar extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
-              style: MyTextTheme.lightTextTheme.headlineMedium?.copyWith(
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
+                    color: Theme.of(context).colorScheme.onSurface,
                   ) ??
                   const TextStyle(
                     fontSize: 20,

@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
-import 'package:transmirror/core/utils/constants/image_strings.dart';
+import 'package:transmirror/core/utils/constants/sizes.dart';
 import 'package:transmirror/core/utils/theme/widget_themes/button_theme.dart';
 import 'package:transmirror/core/utils/theme/widget_themes/text_field_theme.dart';
+import 'package:transmirror/core/widgets/auth/auth_button_progressive_dots.dart';
+import 'package:transmirror/core/widgets/auth/auth_field_styles.dart';
 import 'package:transmirror/view_model/forgot_password_controller.dart';
 import 'package:transmirror/core/utils/theme/theme.dart';
 import 'package:transmirror/core/widgets/auth/auth_brand_header.dart';
 import 'package:transmirror/core/widgets/auth/auth_gradient_background.dart';
-import 'package:transmirror/core/widgets/auth/auth_legal_footer.dart';
 import 'package:transmirror/core/widgets/auth/auth_top_bar.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
@@ -34,95 +35,98 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           ),
           child: SafeArea(
             bottom: true,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                return SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                    child: Form(
-                      key: c.formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const AuthTopBar(),
-                              const SizedBox(height: 8),
-                              const AuthBrandHeader(
-                                logoAsset: MyImages.logoImage,
-                                title: 'Reset password',
-                                subtitle:
-                                    'We will email a password reset link to your account.',
-                              ),
-                              const SizedBox(height: 32),
-                              const Text(
-                                'Email address',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 24, right: 24, top: 4),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: AuthTopBar(),
+                  ),
+                ),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        keyboardDismissBehavior:
+                            ScrollViewKeyboardDismissBehavior.onDrag,
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+                          child: Form(
+                            key: c.formKey,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                const AuthBrandHeader(
+                                  title: 'Reset password',
+                                  subtitle:
+                                      'We will email a password reset link to your account.',
                                 ),
-                              ),
-                              const SizedBox(height: 8),
-                              TextFormField(
-                                controller: c.emailController,
-                                keyboardType: TextInputType.emailAddress,
-                                style: const TextStyle(color: Colors.white),
-                                decoration: MyTextFormFieldTheme.authDarkInputDecoration(
-                                  hintText: 'example123@gmail.com',
-                                  prefixIcon: const Icon(
-                                    Iconsax.sms,
-                                    color: Colors.white70,
+                                const SizedBox(height: MySizes.spaceBtwSections),
+                                Text(
+                                  'Email address',
+                                  style: AuthFieldStyles.labelDark(context),
+                                ),
+                                const SizedBox(height: 8),
+                                TextFormField(
+                                  controller: c.emailController,
+                                  keyboardType: TextInputType.emailAddress,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                  ),
+                                  decoration:
+                                      MyTextFormFieldTheme.authDarkInputDecoration(
+                                    hintText: 'example123@gmail.com',
+                                    prefixIcon: Icon(
+                                      Iconsax.sms,
+                                      color: Colors.white70,
+                                      size: MySizes.iconSm,
+                                    ),
+                                  ),
+                                  validator: (v) => (v == null || v.isEmpty)
+                                      ? 'Required'
+                                      : null,
+                                ),
+                                const SizedBox(height: MySizes.defaultSpace),
+                                Obx(
+                                  () => GradientElevatedButton(
+                                    onPressed: c.isLoading.value
+                                        ? null
+                                        : c.sendReset,
+                                    backgroundColor: MyColors.darkLink,
+                                    borderColor: MyColors.darkLink,
+                                    radius: 14,
+                                    height: 44,
+                                    padding: 10,
+                                    child: c.isLoading.value
+                                        ? const AuthButtonProgressiveDots(
+                                            size: 22,
+                                          )
+                                        : const Text(
+                                            'Send reset link',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 15,
+                                            ),
+                                          ),
                                   ),
                                 ),
-                                validator: (v) =>
-                                    (v == null || v.isEmpty) ? 'Required' : null,
-                              ),
-                              const SizedBox(height: 28),
-                              Obx(
-                                () => GradientElevatedButton(
-                                  onPressed: c.isLoading.value ? null : c.sendReset,
-                                  backgroundColor: MyColors.darkLink,
-                                  borderColor: MyColors.darkLink,
-                                  radius: 18,
-                                  height: 52,
-                                  child: c.isLoading.value
-                                      ? const SizedBox(
-                                          height: 20,
-                                          width: 20,
-                                          child: CircularProgressIndicator(
-                                            strokeWidth: 2,
-                                            valueColor:
-                                                AlwaysStoppedAnimation<Color>(Colors.white),
-                                          ),
-                                        )
-                                      : const Text(
-                                          'Send reset link',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                          const Padding(
-                            padding: EdgeInsets.only(top: 28, bottom: 12),
-                            child: AuthLegalFooter(),
-                          ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
+                ),
+              ],
             ),
           ),
         ),

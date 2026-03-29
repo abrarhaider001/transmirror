@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:transmirror/core/routes/app_routes.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
-import 'package:transmirror/core/utils/constants/image_strings.dart';
+import 'package:transmirror/core/utils/constants/sizes.dart';
 import 'package:transmirror/core/utils/popups/app_snackbar.dart';
 import 'package:transmirror/core/widgets/auth/auth_brand_header.dart';
 import 'package:transmirror/core/widgets/auth/auth_footer.dart';
 import 'package:transmirror/core/utils/theme/theme.dart';
 import 'package:transmirror/core/widgets/auth/auth_gradient_background.dart';
-import 'package:transmirror/core/widgets/auth/auth_legal_footer.dart';
 import 'package:transmirror/core/widgets/auth/auth_social_buttons.dart';
 import 'package:transmirror/core/widgets/auth/login_form.dart';
 import 'package:transmirror/view_model/login_controller.dart';
@@ -49,26 +48,25 @@ class LoginPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               AuthBrandHeader(
-                                logoAsset: MyImages.logoImage,
                                 title: 'Welcome',
                                 subtitle: 'Sign in to continue to transmirror',
                               ),
-                              const SizedBox(height: 28),
+                              const SizedBox(height: MySizes.spaceBtwSections),
                               LoginForm(
                                 controller: controller,
                                 darkAuth: true,
                                 loginButtonLabel: 'Login',
                                 showLoginLeadingIcon: true,
                               ),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: MySizes.defaultSpace),
                               _OrDivider(),
-                              const SizedBox(height: 24),
+                              const SizedBox(height: MySizes.spaceBtwItems),
                               ContinueWithGoogleButton(
                                 onTap: () => AppSnackBar.info(
                                   'Sign in with Google is not available yet.',
                                 ),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: 24),
                               AuthFooter(
                                 text: "Don't have an account? ",
                                 actionText: 'Register',
@@ -80,10 +78,6 @@ class LoginPage extends StatelessWidget {
                       );
                     },
                   ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.fromLTRB(24, 8, 24, 12),
-                  child: AuthLegalFooter(),
                 ),
               ],
             ),
@@ -106,9 +100,9 @@ class _OrDivider extends StatelessWidget {
           child: Text(
             'Or',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: MyColors.darkOnSurfaceMuted,
-                  fontWeight: FontWeight.w500,
-                ),
+              color: MyColors.darkOnSurfaceMuted,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ),
         Expanded(child: Divider(color: line, thickness: 1)),

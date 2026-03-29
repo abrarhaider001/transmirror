@@ -15,7 +15,7 @@ class MyColors {
   static const Color secondaryBackground = Color(0xFFF1F5F9);
   static const Color lightBackground = primaryBackground;
 
-  // — Light text —
+  // — Light text (on light surfaces) —
   static const Color textPrimary = Color(0xFF0F172A);
   static const Color textSecondary = Color(0xFF6B7280);
   static const Color textTertiary = Color(0xFF9CA3AF);
