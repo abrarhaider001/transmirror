@@ -25,7 +25,7 @@ class ProfileSocialActionsRow extends StatelessWidget {
           Expanded(
             child: _SocialTile(
               label: 'Share',
-              icon: Iconsax.share,
+              icon: Icons.share,
               onTap: onShare,
             ),
           ),

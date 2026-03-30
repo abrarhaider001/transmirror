@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
 
 class LanguagePickerChip extends StatelessWidget {
   final TranslateLanguage selectedLanguage;
   final ValueChanged<TranslateLanguage> onLanguageChanged;
   final String label;
+  /// Optional leading widget (e.g. circular flag) shown before the language name.
+  final Widget? leading;
 
   const LanguagePickerChip({
     super.key,
     required this.selectedLanguage,
     required this.onLanguageChanged,
     this.label = '',
+    this.leading,
   });
 
   String _getLanguageName(TranslateLanguage language) {
@@ -34,40 +36,48 @@ class LanguagePickerChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return GestureDetector(
       onTap: () => _showLanguagePicker(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         decoration: BoxDecoration(
-          color: MyColors.grey.withOpacity(0.3),
+          color: cs.surfaceContainerHighest.withOpacity(0.85),
           borderRadius: BorderRadius.circular(30),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
+            if (leading != null) ...[
+              leading!,
+              const SizedBox(width: 8),
+            ],
             if (label.isNotEmpty) ...[
               Text(
                 '$label: ',
-                style: const TextStyle(
-                  color: MyColors.textSecondary,
+                style: TextStyle(
+                  color: cs.onSurfaceVariant,
                   fontWeight: FontWeight.w500,
                   fontSize: 12,
                 ),
               ),
             ],
-            Text(
-              _getLanguageName(selectedLanguage),
-              style: const TextStyle(
-                color: MyColors.textPrimary,
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
+            Flexible(
+              child: Text(
+                _getLanguageName(selectedLanguage),
+                style: TextStyle(
+                  color: cs.onSurface,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            const SizedBox(width: 8),
-            const Icon(
+            const SizedBox(width: 6),
+            Icon(
               Iconsax.arrow_down_1,
               size: 16,
-              color: MyColors.textPrimary,
+              color: cs.onSurface,
             ),
           ],
         ),
@@ -122,11 +132,12 @@ class _LanguageSelectionSheetState extends State<_LanguageSelectionSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Container(
       height: MediaQuery.of(context).size.height * 0.7, // Max height
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      decoration: BoxDecoration(
+        color: cs.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
       ),
       child: Column(
         children: [
@@ -136,7 +147,7 @@ class _LanguageSelectionSheetState extends State<_LanguageSelectionSheet> {
             height: 4,
             margin: const EdgeInsets.symmetric(vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: cs.outlineVariant.withOpacity(0.5),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -146,12 +157,13 @@ class _LanguageSelectionSheetState extends State<_LanguageSelectionSheet> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: TextField(
               controller: _searchController,
+              style: TextStyle(color: cs.onSurface),
               decoration: InputDecoration(
                 hintText: 'Search language...',
-                hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
-                prefixIcon: const Icon(Iconsax.search_normal, color: Colors.grey,),
+                hintStyle: TextStyle(fontSize: 14, color: cs.onSurfaceVariant),
+                prefixIcon: Icon(Iconsax.search_normal, color: cs.onSurfaceVariant),
                 filled: true,
-                fillColor: MyColors.softGrey,
+                fillColor: cs.surfaceContainerHighest,
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
@@ -181,17 +193,17 @@ class _LanguageSelectionSheetState extends State<_LanguageSelectionSheet> {
                       fontWeight: isSelected
                           ? FontWeight.bold
                           : FontWeight.normal,
-                      color: isSelected ? MyColors.primary : Colors.black87,
+                      color: isSelected ? cs.primary : cs.onSurface,
                     ),
                   ),
                   trailing: isSelected
-                      ? const Icon(Iconsax.tick_circle, color: MyColors.primary)
+                      ? Icon(Iconsax.tick_circle, color: cs.primary)
                       : null,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   tileColor: isSelected
-                      ? MyColors.primary.withOpacity(0.05)
+                      ? cs.primary.withOpacity(0.08)
                       : null,
                 );
               },

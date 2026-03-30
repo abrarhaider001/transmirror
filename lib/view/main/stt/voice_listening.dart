@@ -1,15 +1,19 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
-import 'package:transmirror/core/widgets/layout_app_bar.dart';
-import 'package:transmirror/core/widgets/widgets/stt_input_overlay.dart';
+import 'package:transmirror/core/utils/constants/sizes.dart';
+import 'package:transmirror/core/widgets/main/stt/stt_recommended_section.dart';
+import 'package:transmirror/core/widgets/main/stt/stt_speak_freely_panel.dart';
+import 'package:transmirror/core/widgets/main/stt/stt_translate_app_bar.dart';
+import 'package:transmirror/core/widgets/main/stt/stt_translate_cards_stack.dart';
 import 'package:transmirror/core/widgets/widgets/tts_mode_selector.dart';
 
 class VoiceListeningPage extends StatefulWidget {
@@ -27,9 +31,10 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
       OnDeviceTranslatorModelManager();
   OnDeviceTranslator? _translator;
 
+  final ScrollController _scrollController = ScrollController();
+
   bool _speechEnabled = false;
   bool _isRecording = false;
-  final bool _isProcessing = false;
   bool _isTranslateMode = false;
   bool _isSpeaking = false;
 
@@ -40,8 +45,13 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
   Timer? _timer;
   int _seconds = 0;
 
+  bool _scrollbarVisible = false;
+  Timer? _scrollbarHideTimer;
+
   TranslateLanguage _selectedSourceLanguage = TranslateLanguage.english;
   TranslateLanguage _selectedTargetLanguage = TranslateLanguage.urdu;
+
+  static const double _cardRadius = 26;
 
   @override
   void initState() {
@@ -51,7 +61,6 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
   }
 
   Future<void> _initTts() async {
-    // await _flutterTts.setSharedInstance(true);
     await _flutterTts.setVolume(1.0);
     await _flutterTts.setSpeechRate(0.5);
     await _flutterTts.setPitch(1.0);
@@ -69,26 +78,27 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
     });
   }
 
-  /// This has to happen only once per app
   void _initSpeech() async {
     final myHash = hashCode;
     debugPrint('STT_DEBUG [$myHash]: Initializing Speech to Text...');
-    
-    // Check if initialized, if not initialize it
+
     if (!_speechToText.isAvailable) {
       _speechEnabled = await _speechToText.initialize(
         onStatus: (status) {
           debugPrint('STT_DEBUG [GLOBAL]: Status updated -> $status');
-          // Handle status globally since listen() doesn't support onStatus
           if (status == 'notListening' || status == 'done') {
             if (mounted && _isRecording) {
-              debugPrint('STT_DEBUG [$myHash]: Silence/Stop detected by global status. Stopping...');
+              debugPrint(
+                'STT_DEBUG [$myHash]: Silence/Stop detected by global status. Stopping...',
+              );
               _stopRecording();
             }
           }
         },
         onError: (errorNotification) {
-          debugPrint('STT_DEBUG [GLOBAL]: Error occurred -> ${errorNotification.errorMsg}');
+          debugPrint(
+            'STT_DEBUG [GLOBAL]: Error occurred -> ${errorNotification.errorMsg}',
+          );
           if (mounted) {
             _stopRecording();
           }
@@ -98,23 +108,32 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
     } else {
       _speechEnabled = true;
     }
-    
-    debugPrint('STT_DEBUG [$myHash]: Initialization complete. Enabled: $_speechEnabled');
+
+    debugPrint(
+      'STT_DEBUG [$myHash]: Initialization complete. Enabled: $_speechEnabled',
+    );
     if (mounted) {
       setState(() {});
     }
   }
 
+  void _flashScrollbar() {
+    setState(() => _scrollbarVisible = true);
+    _scrollbarHideTimer?.cancel();
+    _scrollbarHideTimer = Timer(const Duration(milliseconds: 900), () {
+      if (mounted) setState(() => _scrollbarVisible = false);
+    });
+  }
+
   void _startRecording() async {
     final myHash = hashCode;
     debugPrint('STT_DEBUG [$myHash]: Attempting to start recording...');
-    
+
     if (!_speechEnabled) {
       debugPrint('STT_DEBUG [$myHash]: Cannot start - Speech not enabled');
       return;
     }
-    
-    // Stop any ongoing TTS before starting to listen
+
     if (_isSpeaking) {
       debugPrint('STT_DEBUG [$myHash]: Ongoing TTS detected, stopping TTS...');
       await _flutterTts.stop();
@@ -126,9 +145,10 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
     _translatedText = '';
     _seconds = 0;
 
-    debugPrint('STT_DEBUG [$myHash]: Calling _speechToText.listen() with locale: ${_selectedSourceLanguage.bcpCode}');
-    
-    // Cancel any previous listen to clear listeners
+    debugPrint(
+      'STT_DEBUG [$myHash]: Calling _speechToText.listen() with locale: ${_selectedSourceLanguage.bcpCode}',
+    );
+
     await _speechToText.cancel();
     await Future.delayed(const Duration(milliseconds: 100));
 
@@ -138,13 +158,14 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
           debugPrint('STT_DEBUG [$myHash]: Result ignored - unmounted.');
           return;
         }
-        debugPrint('STT_DEBUG [$myHash]: Result received. Final? -> ${result.finalResult}');
+        debugPrint(
+          'STT_DEBUG [$myHash]: Result received. Final? -> ${result.finalResult}',
+        );
         _onSpeechResult(result);
-        
-        // Manual stop logic if silence detected by engine
+
         if (result.finalResult) {
-           debugPrint('STT_DEBUG [$myHash]: Final result received. Stopping...');
-           _stopRecording();
+          debugPrint('STT_DEBUG [$myHash]: Final result received. Stopping...');
+          _stopRecording();
         }
       },
       localeId: _selectedSourceLanguage.bcpCode,
@@ -163,7 +184,9 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
 
   void _stopRecording() async {
     final myHash = hashCode;
-    debugPrint('STT_DEBUG [$myHash]: _stopRecording() called. current _isRecording: $_isRecording');
+    debugPrint(
+      'STT_DEBUG [$myHash]: _stopRecording() called. current _isRecording: $_isRecording',
+    );
     if (_isRecording) {
       debugPrint('STT_DEBUG [$myHash]: Stopping speechToText instance...');
       await _speechToText.stop();
@@ -189,7 +212,6 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
         _textController.text = _lastWords;
       }
 
-      // Auto translate if in translate mode
       if (_isTranslateMode && _lastWords.isNotEmpty) {
         _handleAutoTranslate(_lastWords);
       }
@@ -212,9 +234,7 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
       final sourceLang = _selectedSourceLanguage;
       final targetLang = _selectedTargetLanguage;
 
-      // Initialize translator once if languages haven't changed
       if (_translator == null) {
-        // Check downloads
         if (!(await _modelManager.isModelDownloaded(sourceLang.bcpCode))) {
           await _modelManager.downloadModel(sourceLang.bcpCode);
         }
@@ -241,7 +261,6 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
     } finally {
       if (mounted) {
         setState(() => _isTranslating = false);
-        // Process pending translation if text changed while translating
         if (_pendingTranslationText.isNotEmpty &&
             _pendingTranslationText != text) {
           final nextText = _pendingTranslationText;
@@ -270,18 +289,20 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     final minutes = twoDigits(duration.inMinutes.remainder(60));
     final seconds = twoDigits(duration.inSeconds.remainder(60));
-    return "$minutes:$seconds";
+    return '$minutes:$seconds';
   }
 
   void _handleCopy() {
-    if (_textController.text.isNotEmpty) {
-      Clipboard.setData(ClipboardData(text: _textController.text));
+    final text = _isTranslateMode ? _translatedText : _lastWords;
+    if (text.isNotEmpty) {
+      Clipboard.setData(ClipboardData(text: text));
     }
   }
 
   void _handleView() {
     if (_lastWords.isEmpty && _translatedText.isEmpty) return;
 
+    final cs = Theme.of(context).colorScheme;
     Get.dialog(
       Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -294,62 +315,55 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
+                  Text(
                     'Extracted Text',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: MyColors.primary,
+                      color: cs.primary,
                     ),
                   ),
                   IconButton(
                     onPressed: () => Get.back(),
-                    icon: const Icon(Iconsax.close_circle, color: Colors.grey),
+                    icon: Icon(
+                      Iconsax.close_circle,
+                      color: cs.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),
-              // const SizedBox(height: 16),
               if (_isTranslateMode) ...[
-                const Text(
+                Text(
                   'Original:',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: MyColors.textSecondary,
+                    color: cs.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   _lastWords,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: MyColors.textPrimary,
-                  ),
+                  style: TextStyle(fontSize: 14, color: cs.onSurface),
                 ),
                 const SizedBox(height: 16),
-                const Text(
+                Text(
                   'Translated:',
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.bold,
-                    color: MyColors.textSecondary,
+                    color: cs.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   _translatedText,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: MyColors.textPrimary,
-                  ),
+                  style: TextStyle(fontSize: 14, color: cs.onSurface),
                 ),
               ] else ...[
                 Text(
                   _lastWords,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: MyColors.textPrimary,
-                  ),
+                  style: TextStyle(fontSize: 14, color: cs.onSurface),
                 ),
               ],
             ],
@@ -359,15 +373,17 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
     );
   }
 
-  Future<void> _handleSpeak() async {
-    final textToSpeak = _isTranslateMode ? _translatedText : _lastWords;
+  Future<void> _handleSpeak({required bool useTarget}) async {
+    final textToSpeak = useTarget && _isTranslateMode
+        ? _translatedText
+        : _lastWords;
     if (textToSpeak.isEmpty) return;
 
     if (_isSpeaking) {
       await _flutterTts.stop();
       setState(() => _isSpeaking = false);
     } else {
-      final lang = _isTranslateMode
+      final lang = useTarget && _isTranslateMode
           ? _selectedTargetLanguage
           : _selectedSourceLanguage;
       await _flutterTts.setLanguage(lang.bcpCode);
@@ -375,13 +391,59 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
     }
   }
 
+  void _swapLanguages() {
+    if (!_isTranslateMode) return;
+    setState(() {
+      final t = _selectedSourceLanguage;
+      _selectedSourceLanguage = _selectedTargetLanguage;
+      _selectedTargetLanguage = t;
+      _translator?.close();
+      _translator = null;
+      final lw = _lastWords;
+      _lastWords = _translatedText;
+      _translatedText = lw;
+      if (_isTranslateMode) {
+        _textController.text = _translatedText;
+      }
+    });
+  }
+
+  void _shareContent() {
+    final buffer = StringBuffer();
+    if (_lastWords.isNotEmpty) buffer.writeln(_lastWords);
+    if (_isTranslateMode && _translatedText.isNotEmpty) {
+      buffer.writeln(_translatedText);
+    }
+    if (buffer.isEmpty) return;
+    Share.share(buffer.toString().trim());
+  }
+
+  void _onRecordTap() {
+    if (!_speechEnabled) return;
+    if (_isRecording) {
+      _stopRecording();
+    } else {
+      _startRecording();
+    }
+  }
+
+  /// Fixed height so [SttTranslateCardsStack] can use [Expanded] inside a scrollable page.
+  double _translateStackHeight(BuildContext context) {
+    final h = MediaQuery.sizeOf(context).height;
+    return (h * 0.52).clamp(400.0, 620.0);
+  }
+
   @override
   void dispose() {
     final myHash = hashCode;
-    debugPrint('STT_DEBUG [$myHash]: Disposing VoiceListeningPage. Force cancelling STT...');
+    debugPrint(
+      'STT_DEBUG [$myHash]: Disposing VoiceListeningPage. Force cancelling STT...',
+    );
+    _scrollbarHideTimer?.cancel();
+    _scrollController.dispose();
     _timer?.cancel();
     _speechToText.stop();
-    _speechToText.cancel(); // Force release native resources
+    _speechToText.cancel();
     _flutterTts.stop();
     _textController.dispose();
     _translator?.close();
@@ -390,17 +452,18 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: MyColors.softGrey,
+      backgroundColor: cs.surface,
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const LayoutPagesAppBar(
-              title: 'Speech to Text',
-              showBack: true,
-              showTrailing: false,
+            SttTranslateAppBar(
+              onBack: () => Navigator.of(context).pop(),
+              onShare: _shareContent,
             ),
-
             TTSModeSelector(
               isTranslateMode: _isTranslateMode,
               onModeChanged: (val) {
@@ -415,126 +478,121 @@ class _VoiceListeningPageState extends State<VoiceListeningPage> {
                 });
               },
             ),
-
             Expanded(
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: MyColors.primary.withOpacity(0.1),
-                      blurRadius: 15,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    // Action Buttons (View, Copy, Speak)
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          if (_isTranslateMode)
-                            _buildActionButton(
-                              icon: Iconsax.eye,
-                              onTap: _handleView,
+              child: Listener(
+                behavior: HitTestBehavior.deferToChild,
+                onPointerDown: (_) => _flashScrollbar(),
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (n) {
+                    if (n is ScrollUpdateNotification ||
+                        n is ScrollStartNotification) {
+                      _flashScrollbar();
+                    }
+                    return false;
+                  },
+                  child: _isTranslateMode
+                      ? Scrollbar(
+                          controller: _scrollController,
+                          thumbVisibility: _scrollbarVisible,
+                          thickness: 2,
+                          radius: const Radius.circular(8),
+                          child: SingleChildScrollView(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.fromLTRB(
+                              MySizes.defaultPagePadding,
+                              4,
+                              MySizes.defaultPagePadding,
+                              MySizes.lg,
                             ),
-                          const SizedBox(width: 8),
-                          _buildActionButton(
-                            icon: Iconsax.copy,
-                            onTap: _handleCopy,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                SizedBox(
+                                  height: _translateStackHeight(context),
+                                  child: SttTranslateCardsStack(
+                                    radius: _cardRadius,
+                                    sourceLanguage: _selectedSourceLanguage,
+                                    targetLanguage: _selectedTargetLanguage,
+                                    onSourceChanged: (val) {
+                                      setState(() {
+                                        _selectedSourceLanguage = val;
+                                        _translator?.close();
+                                        _translator = null;
+                                      });
+                                    },
+                                    onTargetChanged: (val) {
+                                      setState(() {
+                                        _selectedTargetLanguage = val;
+                                        _translator?.close();
+                                        _translator = null;
+                                      });
+                                    },
+                                    lastWords: _lastWords,
+                                    translatedText: _translatedText,
+                                    speechEnabled: _speechEnabled,
+                                    isRecording: _isRecording,
+                                    formattedTime: _formattedTime,
+                                    onRecordTap: _onRecordTap,
+                                    onSpeakSource: () =>
+                                        _handleSpeak(useTarget: false),
+                                    onSpeakTarget: () =>
+                                        _handleSpeak(useTarget: true),
+                                    onCopy: _handleCopy,
+                                    onView: _handleView,
+                                    onSwap: _swapLanguages,
+                                    isSpeaking: _isSpeaking,
+                                  ),
+                                ),
+                                const SizedBox(height: MySizes.md),
+                                SttRecommendedSection(
+                                  onPairTap: (from, to) {
+                                    setState(() {
+                                      _selectedSourceLanguage = from;
+                                      _selectedTargetLanguage = to;
+                                      _translator?.close();
+                                      _translator = null;
+                                      _lastWords = '';
+                                      _translatedText = '';
+                                      _pendingTranslationText = '';
+                                      _textController.clear();
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
-                          const SizedBox(width: 8),
-                          _buildActionButton(
-                            icon: _isSpeaking
-                                ? Iconsax.stop
-                                : Iconsax.volume_high,
-                            onTap: _handleSpeak,
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.fromLTRB(
+                            MySizes.defaultPagePadding,
+                            4,
+                            MySizes.defaultPagePadding,
+                            MySizes.lg,
                           ),
-                        ],
-                      ),
-                    ),
-
-                    // Text Area
-                    Expanded(
-                      child: TextField(
-                        controller: _textController,
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          hintText: _speechEnabled
-                              ? 'Tap the microphone to start speaking...'
-                              : 'Speech recognition not available',
-                          border: InputBorder.none,
-                          contentPadding: const EdgeInsets.all(20),
-                          hintStyle: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey,
+                          child: SttSpeakFreelyPanel(
+                            radius: _cardRadius,
+                            sourceLanguage: _selectedSourceLanguage,
+                            onSourceLanguageChanged: (val) {
+                              setState(() {
+                                _selectedSourceLanguage = val;
+                                _translator?.close();
+                                _translator = null;
+                              });
+                            },
+                            textController: _textController,
+                            speechEnabled: _speechEnabled,
+                            isRecording: _isRecording,
+                            formattedTime: _formattedTime,
+                            isSpeaking: _isSpeaking,
+                            onRecordTap: _onRecordTap,
+                            onSpeakTap: () => _handleSpeak(useTarget: false),
                           ),
                         ),
-                        maxLines: null,
-                        expands: true,
-                        textAlignVertical: TextAlignVertical.top,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          height: 1.5,
-                          color: MyColors.primary,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-
-                    // Input Overlay
-                    STTInputOverlay(
-                      isTranslateMode: _isTranslateMode,
-                      sourceLanguage: _selectedSourceLanguage,
-                      targetLanguage: _selectedTargetLanguage,
-                      onSourceChanged: (val) {
-                        setState(() {
-                          _selectedSourceLanguage = val;
-                          _translator?.close();
-                          _translator = null;
-                        });
-                      },
-                      onTargetChanged: (val) {
-                        setState(() {
-                          _selectedTargetLanguage = val;
-                          _translator?.close();
-                          _translator = null;
-                        });
-                      },
-                      isRecording: _isRecording,
-                      isProcessing: _isProcessing,
-                      onRecordPressed: _startRecording,
-                      onStopPressed: _stopRecording,
-                      formattedTime: _formattedTime,
-                    ),
-                  ],
                 ),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required VoidCallback? onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(8),
-        decoration: BoxDecoration(
-          color: MyColors.softGrey,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Icon(icon, size: 18, color: MyColors.primary),
       ),
     );
   }
