@@ -11,51 +11,76 @@ class MyTextFormFieldTheme {
     vertical: 10,
   );
 
+  /// Light: white pill, hairline grey border, black focus — reference ChatGPT input.
   static InputDecorationTheme lightInputDecorationTheme = InputDecorationTheme(
-    prefixIconColor: MyColors.textSecondary,
-    floatingLabelStyle: const TextStyle(color: MyColors.primary),
+    filled: true,
+    fillColor: MyColors.white,
+    prefixIconColor: MyColors.textTertiary,
+    suffixIconColor: MyColors.textTertiary,
+    floatingLabelStyle: const TextStyle(color: MyColors.textPrimary),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
-      borderSide: const BorderSide(width: 1, color: MyColors.grey10),
+      borderRadius: BorderRadius.circular(MySizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: MyColors.borderLight),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
-      borderSide: const BorderSide(width: 1, color: MyColors.grey10),
+      borderRadius: BorderRadius.circular(MySizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: MyColors.borderLight),
     ),
     disabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
-      borderSide: const BorderSide(width: 1, color: MyColors.grey10),
+      borderRadius: BorderRadius.circular(MySizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: MyColors.borderLight),
     ),
-    hintStyle: TextStyle(color: MyColors.grey.withOpacity(0.5)),
+    hintStyle: const TextStyle(color: MyColors.textMutedLight),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
-      borderSide: const BorderSide(width: 2, color: MyColors.primary),
+      borderRadius: BorderRadius.circular(MySizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1.5, color: MyColors.textPrimary),
     ),
   );
 
+  /// Dark: charcoal field on black, light grey border — reference ChatGPT dark input.
   static InputDecorationTheme darkInputDecorationTheme = InputDecorationTheme(
-    prefixIconColor: MyColors.darkOnSurfaceMuted,
-    floatingLabelStyle: const TextStyle(color: MyColors.darkLink),
+    prefixIconColor: MyColors.textMutedDark,
+    floatingLabelStyle: const TextStyle(color: MyColors.darkOnSurface),
     fillColor: MyColors.darkFieldFill,
     filled: true,
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
-      borderSide: const BorderSide(width: 1, color: MyColors.darkOutline),
+      borderRadius: BorderRadius.circular(MySizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: MyColors.borderDark),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
-      borderSide: const BorderSide(width: 1, color: MyColors.darkOutline),
+      borderRadius: BorderRadius.circular(MySizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: MyColors.borderDark),
     ),
     disabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
-      borderSide: const BorderSide(width: 1, color: MyColors.darkOutline),
+      borderRadius: BorderRadius.circular(MySizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1, color: MyColors.borderDark),
     ),
-    hintStyle: TextStyle(color: MyColors.darkOnSurfaceMuted.withOpacity(0.85)),
+    hintStyle: const TextStyle(color: MyColors.textMutedDark),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
-      borderSide: const BorderSide(width: 2, color: MyColors.darkLink),
+      borderRadius: BorderRadius.circular(MySizes.inputFieldRadius),
+      borderSide: const BorderSide(width: 1.5, color: MyColors.white),
     ),
   );
+
+  /// Compact fields for auth flows — uses [Theme.of] input decoration + neutral icons.
+  static InputDecoration compactInputDecoration(
+    BuildContext context, {
+    String? hintText,
+    Widget? prefixIcon,
+    Widget? suffixIcon,
+  }) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    return InputDecoration(
+      isDense: true,
+      contentPadding: authContentPadding,
+      hintText: hintText,
+      prefixIcon: prefixIcon,
+      suffixIcon: suffixIcon,
+      prefixIconColor: cs.onSurfaceVariant,
+      suffixIconColor: cs.onSurfaceVariant,
+    ).applyDefaults(theme.inputDecorationTheme);
+  }
 
   static InputDecoration lightInputDecoration({
     String? labelText,
@@ -90,39 +115,6 @@ class MyTextFormFieldTheme {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(MySizes.borderRadiusMd),
         borderSide: const BorderSide(width: 2, color: MyColors.primary),
-      ),
-    );
-  }
-
-  /// Dark fields on auth screens ([MyColors] tokens; same palette as [MyAppTheme.darkTheme]).
-  static InputDecoration authDarkInputDecoration({
-    String? hintText,
-    Widget? prefixIcon,
-    Widget? suffixIcon,
-  }) {
-    final r = BorderRadius.circular(MySizes.borderRadiusMd);
-    return InputDecoration(
-      isDense: true,
-      contentPadding: authContentPadding,
-      hintText: hintText,
-      prefixIcon: prefixIcon,
-      suffixIcon: suffixIcon,
-      prefixIconColor: Colors.white70,
-      suffixIconColor: Colors.white70,
-      filled: true,
-      fillColor: MyColors.darkFieldFill,
-      hintStyle: TextStyle(color: MyColors.darkOnSurfaceMuted.withOpacity(0.9)),
-      border: OutlineInputBorder(
-        borderRadius: r,
-        borderSide: const BorderSide(color: MyColors.darkOutline),
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: r,
-        borderSide: const BorderSide(color: MyColors.darkOutline),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: r,
-        borderSide: const BorderSide(color: MyColors.darkLink, width: 2),
       ),
     );
   }

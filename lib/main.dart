@@ -71,17 +71,17 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'transmirror',
         theme: MyAppTheme.lightTheme.copyWith(
-          textSelectionTheme: const TextSelectionThemeData(
+          textSelectionTheme: TextSelectionThemeData(
             cursorColor: MyColors.primary,
-            selectionColor: Color(0x80368d9c),
+            selectionColor: MyColors.secondary.withValues(alpha: 0.35),
             selectionHandleColor: MyColors.primary,
           ),
         ),
         darkTheme: MyAppTheme.darkTheme.copyWith(
           textSelectionTheme: TextSelectionThemeData(
-            cursorColor: MyColors.darkLink,
-            selectionColor: MyColors.darkLink.withOpacity(0.35),
-            selectionHandleColor: MyColors.darkLink,
+            cursorColor: MyColors.white,
+            selectionColor: MyColors.white.withValues(alpha: 0.25),
+            selectionHandleColor: MyColors.white,
           ),
         ),
         themeMode: themeModeController.themeMode.value,

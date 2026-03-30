@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
 
 class AuthTopBar extends StatelessWidget {
   final bool showBack;
@@ -11,6 +10,7 @@ class AuthTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Row(
       children: [
         if (showBack)
@@ -23,13 +23,16 @@ class AuthTopBar extends StatelessWidget {
                 width: 44,
                 height: 44,
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
+                  color: Color.alphaBlend(
+                    cs.outline.withValues(alpha: 0.35),
+                    cs.surface,
+                  ),
                   shape: BoxShape.circle,
-                  border: Border.all(color: MyColors.darkOutline),
+                  border: Border.all(color: cs.outline),
                 ),
                 child: Icon(
                   Iconsax.arrow_left,
-                  color: MyColors.darkOnBackground,
+                  color: cs.onSurface,
                   size: 22,
                 ),
               ),

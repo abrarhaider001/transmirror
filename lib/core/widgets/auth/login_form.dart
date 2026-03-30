@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/sizes.dart';
 import 'package:transmirror/core/widgets/auth/auth_button_progressive_dots.dart';
 import 'package:transmirror/core/widgets/auth/auth_field_styles.dart';
@@ -12,83 +11,58 @@ import 'package:transmirror/core/routes/app_routes.dart';
 
 class LoginForm extends StatelessWidget {
   final LoginController controller;
-  final bool darkAuth;
   final String loginButtonLabel;
   final bool showLoginLeadingIcon;
 
   const LoginForm({
     super.key,
     required this.controller,
-    this.darkAuth = false,
     this.loginButtonLabel = 'Login',
     this.showLoginLeadingIcon = true,
   });
 
-  TextStyle _labelStyle(BuildContext context) {
-    if (darkAuth) {
-      return AuthFieldStyles.labelDark(context);
-    }
-    return Theme.of(context).textTheme.titleLarge!;
-  }
-
-  InputDecoration _fieldDeco({
-    required String hint,
-    Widget? prefix,
-    Widget? suffix,
-  }) {
-    if (darkAuth) {
-      return MyTextFormFieldTheme.authDarkInputDecoration(
-        hintText: hint,
-        prefixIcon: prefix,
-        suffixIcon: suffix,
-      );
-    }
-    return MyTextFormFieldTheme.lightInputDecoration(
-      hintText: hint,
-      prefixIcon: prefix,
-      suffixIcon: suffix,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final iconColor = darkAuth ? Colors.white70 : MyColors.primary;
+    final cs = Theme.of(context).colorScheme;
+    final fieldStyle = TextStyle(
+      color: cs.onSurface,
+      fontSize: 14,
+    );
+    final iconColor = cs.onSurfaceVariant;
 
     return Form(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Email address', style: _labelStyle(context)),
+          Text('Email address', style: AuthFieldStyles.labelAuth(context)),
           const SizedBox(height: 8),
           TextFormField(
             controller: controller.emailController,
             keyboardType: TextInputType.emailAddress,
-            style: darkAuth
-                ? const TextStyle(color: Colors.white, fontSize: 14)
-                : const TextStyle(fontSize: 14),
-            decoration: _fieldDeco(
-              hint: 'example@email.com',
-              prefix: Icon(Iconsax.sms, color: iconColor, size: MySizes.iconSm),
+            style: fieldStyle,
+            decoration: MyTextFormFieldTheme.compactInputDecoration(
+              context,
+              hintText: 'example@email.com',
+              prefixIcon: Icon(Iconsax.sms, color: iconColor, size: MySizes.iconSm),
             ),
           ),
           const SizedBox(height: 16),
-          Text('Password', style: _labelStyle(context)),
+          Text('Password', style: AuthFieldStyles.labelAuth(context)),
           const SizedBox(height: 8),
           Obx(
             () => TextFormField(
               controller: controller.passwordController,
               obscureText: controller.obscure.value,
-              style: darkAuth
-                  ? const TextStyle(color: Colors.white, fontSize: 14)
-                  : const TextStyle(fontSize: 14),
-              decoration: _fieldDeco(
-                hint: '••••••••',
-                prefix: Icon(
+              style: fieldStyle,
+              decoration: MyTextFormFieldTheme.compactInputDecoration(
+                context,
+                hintText: '••••••••',
+                prefixIcon: Icon(
                   Iconsax.lock,
                   color: iconColor,
                   size: MySizes.iconSm,
                 ),
-                suffix: IconButton(
+                suffixIcon: IconButton(
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
                     minWidth: 40,
@@ -118,7 +92,7 @@ class LoginForm extends StatelessWidget {
               child: Text(
                 'Forgot password?',
                 style: TextStyle(
-                  color: darkAuth ? MyColors.darkLink : MyColors.primary,
+                  color: cs.primary,
                   fontWeight: FontWeight.w600,
                   fontSize: MySizes.fontSizeXs,
                 ),
@@ -129,8 +103,8 @@ class LoginForm extends StatelessWidget {
           Obx(
             () => GradientElevatedButton(
               onPressed: controller.isLoading.value ? null : controller.login,
-              backgroundColor: darkAuth ? MyColors.darkLink : MyColors.primary,
-              borderColor: darkAuth ? MyColors.darkLink : MyColors.primary,
+              backgroundColor: cs.primary,
+              borderColor: cs.primary,
               radius: 14,
               height: 44,
               padding: 10,
@@ -141,17 +115,17 @@ class LoginForm extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (showLoginLeadingIcon) ...[
-                          const Icon(
+                          Icon(
                             Iconsax.user,
-                            color: Colors.white,
+                            color: cs.onPrimary,
                             size: MySizes.iconSm,
                           ),
                           const SizedBox(width: 8),
                         ],
                         Text(
                           loginButtonLabel,
-                          style: const TextStyle(
-                            color: Colors.white,
+                          style: TextStyle(
+                            color: cs.onPrimary,
                             fontWeight: FontWeight.w600,
                             fontSize: 15,
                           ),

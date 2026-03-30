@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/image_strings.dart';
 import 'package:transmirror/core/utils/constants/sizes.dart';
 
 /// Shared sizing for auth pill buttons.
 abstract final class AuthPillStyles {
-  static const double radius = 14;
+  static const double radius = 28;
   static const double height = 46;
 }
 
-/// White pill (e.g. Google) — same style as reference “Continue with Google”.
+/// Pill (e.g. Google) — uses [ThemeData.colorScheme].
 class AuthLightPillButton extends StatelessWidget {
   const AuthLightPillButton({
     super.key,
@@ -25,11 +24,15 @@ class AuthLightPillButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Material(
-      color: MyColors.authPillLightBg,
-      borderRadius: BorderRadius.circular(AuthPillStyles.radius),
-      clipBehavior: Clip.antiAlias,
+      color: cs.surface,
       elevation: 0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AuthPillStyles.radius),
+        side: BorderSide(color: cs.outline),
+      ),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: SizedBox(
@@ -42,9 +45,9 @@ class AuthLightPillButton extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: MyColors.authPillLightFg,
-                  fontWeight: FontWeight.w600,
-                ),
+                      color: cs.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ],
           ),
@@ -62,6 +65,7 @@ class ContinueWithGoogleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return AuthLightPillButton(
       onTap: onTap,
       label: 'Continue with Google',
@@ -76,7 +80,7 @@ class ContinueWithGoogleButton extends StatelessWidget {
             return Icon(
               Iconsax.global,
               size: 28,
-              color: MyColors.authPillLightFg,
+              color: cs.onSurface,
             );
           },
         ),
@@ -98,6 +102,7 @@ class AuthSocialButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -108,7 +113,7 @@ class AuthSocialButtons extends StatelessWidget {
           onTap: onEmail,
           leading: Icon(
             Iconsax.sms,
-            color: MyColors.darkOnBackground,
+            color: cs.onSurfaceVariant,
             size: 22,
           ),
         ),
@@ -130,6 +135,7 @@ class _OutlinedAuthButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Material(
       color: Colors.transparent,
       borderRadius: BorderRadius.circular(AuthPillStyles.radius),
@@ -140,8 +146,11 @@ class _OutlinedAuthButton extends StatelessWidget {
           height: AuthPillStyles.height,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(AuthPillStyles.radius),
-            border: Border.all(color: MyColors.darkOutline),
-            color: MyColors.darkFieldFill,
+            border: Border.all(color: cs.outline),
+            color: Color.alphaBlend(
+              cs.outline.withValues(alpha: 0.22),
+              cs.surface,
+            ),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -151,9 +160,9 @@ class _OutlinedAuthButton extends StatelessWidget {
               Text(
                 label,
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: MyColors.darkOnBackground,
-                  fontWeight: FontWeight.w600,
-                ),
+                      color: cs.onSurface,
+                      fontWeight: FontWeight.w600,
+                    ),
               ),
             ],
           ),

@@ -1,82 +1,83 @@
 import 'package:flutter/material.dart';
 
-/// Central palette + semantic tokens for light/dark UI (reference: premium dark purple + clean light surfaces).
+/// Central palette + semantic tokens for light/dark UI.
+///
+/// **UI structure** (scaffold, surfaces, borders, typography) uses only black,
+/// white, and greys — matching reference (ChatGPT / iOS-style).
+/// Brand [primary] / [secondary] are used for actions (buttons, key accents).
 class MyColors {
   MyColors._();
 
-  // — Brand (shared) —
-  static const Color primary = Color(0xFF313647);
-  static const Color secondary = Color(0xFF435663);
-  static const Color tertiary = Color(0xFFA3B087);
-  static const Color secondaryLight = Color(0xFF334155);
+  // — Brand (actions / key accents only) —
+  static const Color primary = Color(0xFF081C15);
+  static const Color secondary = Color(0xFF2D6A4F);
+  static const Color tertiary = Color(0xFF40916C);
+  static const Color secondaryLight = Color(0xFF1B4332);
 
-  // — Light mode surfaces —
-  static const Color primaryBackground = Colors.white;
-  static const Color secondaryBackground = Color(0xFFF1F5F9);
-  static const Color lightBackground = primaryBackground;
+  // — Light: structural (white / light grey) —
+  static const Color scaffoldLight = Color(0xFFFFFFFF);
+  /// Grouped list / card tiles (settings-style).
+  static const Color surfaceGroupedLight = Color(0xFFF2F2F7);
+  static const Color borderLight = Color(0xFFE5E5E5);
+  static const Color dividerLight = Color(0xFFC6C6C8);
+  /// Secondary labels, hints, tile subtitles (ChatGPT mid grey).
+  static const Color textMutedLight = Color(0xFF8E8E93);
 
-  // — Light text (on light surfaces) —
-  static const Color textPrimary = Color(0xFF0F172A);
-  static const Color textSecondary = Color(0xFF6B7280);
-  static const Color textTertiary = Color(0xFF9CA3AF);
+  static const Color primaryBackground = scaffoldLight;
+  static const Color secondaryBackground = surfaceGroupedLight;
+  static const Color lightBackground = scaffoldLight;
 
-  // — Dark mode (app-wide) —
-  static const Color darkBackground = Color(0xFF050508);
-  static const Color darkSurface = Color(0xFF12121A);
-  static const Color darkSurfaceVariant = Color(0xFF1A1A24);
+  // — Light text —
+  static const Color textPrimary = Color(0xFF000000);
+  static const Color textSecondary = Color(0xFF8E8E93);
+  static const Color textTertiary = Color(0xFF6C6C70);
+
+  /// Field outline on white (thin light grey).
+  static const Color authOutline = borderLight;
+
+  // — Dark: structural (black / grey) —
+  static const Color scaffoldDark = Color(0xFF000000);
+  /// Inputs, nav chrome, grouped tiles.
+  static const Color surfaceElevatedDark = Color(0xFF2C2C2E);
+  static const Color borderDark = Color(0xFF3A3A3C);
+  static const Color dividerDark = Color(0xFF1C1C1E);
+  static const Color textMutedDark = Color(0xFF98989D);
+
+  static const Color darkBackground = scaffoldDark;
+  static const Color darkSurface = surfaceElevatedDark;
+  static const Color darkSurfaceVariant = Color(0xFF3A3A3C);
   static const Color darkOnBackground = Color(0xFFFFFFFF);
-  static const Color darkOnSurface = Color(0xFFE2E8F0);
-  static const Color darkOnSurfaceMuted = Color(0xFFA0A0A0);
-  static const Color darkOutline = Color(0xFF333333);
-  static const Color darkFieldFill = Color(0x14FFFFFF);
+  static const Color darkOnSurface = Color(0xFFFFFFFF);
+  static const Color darkOnSurfaceMuted = textMutedDark;
+  static const Color darkOutline = borderDark;
+  /// Solid field fill (ChatGPT input bar).
+  static const Color darkFieldFill = surfaceElevatedDark;
 
-  /// Violet accent for links & focus on dark / auth (reference UI).
+  /// Deprecated: prefer [primary] on buttons; kept for legacy dark widgets.
   static const Color darkLink = Color(0xFF9D8AF2);
 
-  /// Blue for inline actions on light backgrounds (links, info).
-  static const Color lightLink = Color(0xFF2563EB);
+  static const Color lightLink = secondary;
 
-  // — Auth gradient (login / register / forgot) —
-  static const Color authGradientStart = Color(0xFF3E1F7A);
-  static const Color authGradientMid = Color(0xFF050508);
-  static const Color authGradientEnd = Color(0xFF3E1F7A);
-
-  static const LinearGradient authBackgroundGradient = LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    colors: [authGradientStart, authGradientMid, authGradientEnd],
-    stops: [0.0, 0.48, 1.0],
-  );
-
-  // — Auth social pills —
-  static const Color authPillLightBg = white;
-  static const Color authPillLightFg = black;
-
-  // — Containers (legacy names) —
   static const Color lightContainer = tertiary;
   static const Color darkContainer = Colors.black;
 
-  // — Buttons (light) —
   static const Color buttonPrimary = primary;
   static const Color buttonSecondary = tertiary;
 
-  // — Icons (light) —
   static const Color iconPrimaryLight = textSecondary;
   static const Color iconSecondaryLight = primary;
 
-  // — Status —
   static const Color error = red;
   static const Color success = Color(0xFF22C55E);
   static const Color warning = Color(0xFFF57C00);
   static const Color info = Color(0xFF2563EB);
 
-  // — Neutrals —
   static const Color black = Colors.black;
   static const Color dark = Color(0xff272727);
   static const Color darkerGrey = Color(0xFF4F4F4F);
   static const Color darkGrey = Color(0xFF939393);
   static const Color grey = Color(0xFFE0E0E0);
-  static const Color grey10 = Color(0xFFF3F4F6);
+  static const Color grey10 = surfaceGroupedLight;
   static const Color softGrey = Color(0xFFF4F4F4);
   static const Color lightGrey = Color(0xFFF9F9F9);
   static const Color white = Color(0xFFFFFFFF);

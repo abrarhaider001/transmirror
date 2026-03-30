@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/sizes.dart';
 import 'package:transmirror/core/widgets/auth/auth_button_progressive_dots.dart';
 import 'package:transmirror/core/widgets/auth/auth_field_styles.dart';
@@ -11,61 +10,42 @@ import 'package:transmirror/view_model/register_controller.dart';
 
 class RegisterForm extends StatelessWidget {
   final RegisterController controller;
-  final bool darkAuth;
 
-  const RegisterForm({
-    super.key,
-    required this.controller,
-    this.darkAuth = false,
-  });
-
-  TextStyle _labelStyle(BuildContext context) {
-    if (darkAuth) {
-      return AuthFieldStyles.labelDark(context);
-    }
-    return Theme.of(context).textTheme.titleLarge!;
-  }
-
-  InputDecoration _fieldDeco({
-    required String hint,
-    Widget? prefix,
-    Widget? suffix,
-  }) {
-    if (darkAuth) {
-      return MyTextFormFieldTheme.authDarkInputDecoration(
-        hintText: hint,
-        prefixIcon: prefix,
-        suffixIcon: suffix,
-      );
-    }
-    return MyTextFormFieldTheme.lightInputDecoration(
-      hintText: hint,
-      prefixIcon: prefix,
-      suffixIcon: suffix,
-    );
-  }
+  const RegisterForm({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
-    final iconColor = darkAuth ? Colors.white70 : MyColors.primary;
-    final linkAccent = darkAuth ? MyColors.darkLink : MyColors.primary;
+    final cs = Theme.of(context).colorScheme;
+    final fieldStyle = TextStyle(
+      color: cs.onSurface,
+      fontSize: 14,
+    );
+    final iconColor = cs.onSurfaceVariant;
+    final linkAccent = cs.primary;
+    final bodyMuted =
+        Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: cs.onSurfaceVariant,
+            ) ??
+            TextStyle(
+              color: cs.onSurfaceVariant,
+              fontSize: 14,
+            );
 
     return Form(
       key: controller.formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Full Name', style: _labelStyle(context)),
+          Text('Full Name', style: AuthFieldStyles.labelAuth(context)),
           const SizedBox(height: 8),
           TextFormField(
             controller: controller.nameController,
             textInputAction: TextInputAction.next,
-            style: darkAuth
-                ? const TextStyle(color: Colors.white, fontSize: 14)
-                : const TextStyle(fontSize: 14),
-            decoration: _fieldDeco(
-              hint: 'John Doe',
-              prefix: Icon(Iconsax.user, color: iconColor, size: MySizes.iconSm),
+            style: fieldStyle,
+            decoration: MyTextFormFieldTheme.compactInputDecoration(
+              context,
+              hintText: 'John Doe',
+              prefixIcon: Icon(Iconsax.user, color: iconColor, size: MySizes.iconSm),
             ),
             validator: (v) {
               if (v == null || v.isEmpty) return 'Required';
@@ -74,36 +54,34 @@ class RegisterForm extends StatelessWidget {
             },
           ),
           const SizedBox(height: 16),
-          Text('Email address', style: _labelStyle(context)),
+          Text('Email address', style: AuthFieldStyles.labelAuth(context)),
           const SizedBox(height: 8),
           TextFormField(
             controller: controller.emailController,
             keyboardType: TextInputType.emailAddress,
             textInputAction: TextInputAction.next,
-            style: darkAuth
-                ? const TextStyle(color: Colors.white, fontSize: 14)
-                : const TextStyle(fontSize: 14),
-            decoration: _fieldDeco(
-              hint: 'example123@gmail.com',
-              prefix: Icon(Iconsax.sms, color: iconColor, size: MySizes.iconSm),
+            style: fieldStyle,
+            decoration: MyTextFormFieldTheme.compactInputDecoration(
+              context,
+              hintText: 'example123@gmail.com',
+              prefixIcon: Icon(Iconsax.sms, color: iconColor, size: MySizes.iconSm),
             ),
             validator: (v) => (v == null || v.isEmpty) ? 'Required' : null,
           ),
           const SizedBox(height: 16),
-          Text('Password', style: _labelStyle(context)),
+          Text('Password', style: AuthFieldStyles.labelAuth(context)),
           const SizedBox(height: 8),
           Obx(
             () => TextFormField(
               controller: controller.passwordController,
               obscureText: controller.obscure1.value,
               textInputAction: TextInputAction.next,
-              style: darkAuth
-                  ? const TextStyle(color: Colors.white, fontSize: 14)
-                  : const TextStyle(fontSize: 14),
-              decoration: _fieldDeco(
-                hint: '••••••••',
-                prefix: Icon(Iconsax.lock, color: iconColor, size: MySizes.iconSm),
-                suffix: IconButton(
+              style: fieldStyle,
+              decoration: MyTextFormFieldTheme.compactInputDecoration(
+                context,
+                hintText: '••••••••',
+                prefixIcon: Icon(Iconsax.lock, color: iconColor, size: MySizes.iconSm),
+                suffixIcon: IconButton(
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
                     minWidth: 40,
@@ -121,19 +99,18 @@ class RegisterForm extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          Text('Confirm Password', style: _labelStyle(context)),
+          Text('Confirm Password', style: AuthFieldStyles.labelAuth(context)),
           const SizedBox(height: 8),
           Obx(
             () => TextFormField(
               controller: controller.confirmController,
               obscureText: controller.obscure2.value,
-              style: darkAuth
-                  ? const TextStyle(color: Colors.white, fontSize: 14)
-                  : const TextStyle(fontSize: 14),
-              decoration: _fieldDeco(
-                hint: '••••••••',
-                prefix: Icon(Iconsax.lock, color: iconColor, size: MySizes.iconSm),
-                suffix: IconButton(
+              style: fieldStyle,
+              decoration: MyTextFormFieldTheme.compactInputDecoration(
+                context,
+                hintText: '••••••••',
+                prefixIcon: Icon(Iconsax.lock, color: iconColor, size: MySizes.iconSm),
+                suffixIcon: IconButton(
                   padding: EdgeInsets.zero,
                   constraints: const BoxConstraints(
                     minWidth: 40,
@@ -150,8 +127,8 @@ class RegisterForm extends StatelessWidget {
               validator: (v) => (v == null || v.isEmpty)
                   ? 'Required'
                   : (controller.passwordController.text != v)
-                  ? 'Passwords do not match'
-                  : null,
+                      ? 'Passwords do not match'
+                      : null,
             ),
           ),
           const SizedBox(height: 16),
@@ -165,9 +142,9 @@ class RegisterForm extends StatelessWidget {
                   child: Checkbox(
                     value: controller.termsAccepted.value,
                     onChanged: (v) => controller.toggleTerms(),
-                    activeColor: linkAccent,
-                    checkColor: Colors.white,
-                    side: BorderSide(color: linkAccent.withOpacity(0.8)),
+                    activeColor: cs.primary,
+                    checkColor: cs.onPrimary,
+                    side: BorderSide(color: cs.primary.withValues(alpha: 0.8)),
                   ),
                 ),
               ),
@@ -176,13 +153,11 @@ class RegisterForm extends StatelessWidget {
                 child: Text.rich(
                   TextSpan(
                     text: 'I agree to the ',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: darkAuth ? Colors.white70 : null,
-                    ),
+                    style: bodyMuted,
                     children: [
                       TextSpan(
                         text: 'Terms & Conditions',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        style: bodyMuted.copyWith(
                           color: linkAccent,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
@@ -192,7 +167,7 @@ class RegisterForm extends StatelessWidget {
                       const TextSpan(text: ' and '),
                       TextSpan(
                         text: 'Privacy Policy',
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        style: bodyMuted.copyWith(
                           color: linkAccent,
                           fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,
@@ -211,17 +186,17 @@ class RegisterForm extends StatelessWidget {
               onPressed: controller.isLoading.value
                   ? null
                   : controller.register,
-              backgroundColor: darkAuth ? MyColors.darkLink : MyColors.primary,
-              borderColor: darkAuth ? MyColors.darkLink : MyColors.primary,
+              backgroundColor: cs.primary,
+              borderColor: cs.primary,
               radius: 14,
               height: 44,
               padding: 10,
               child: controller.isLoading.value
                   ? const AuthButtonProgressiveDots(size: 22)
-                  : const Text(
+                  : Text(
                       'Create account',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: cs.onPrimary,
                         fontWeight: FontWeight.w600,
                         fontSize: 15,
                       ),

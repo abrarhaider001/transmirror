@@ -6,7 +6,7 @@ import 'package:transmirror/core/utils/local_storage/storage_utility.dart';
 class ThemeModeController extends GetxController {
   static const _storageKey = 'theme_mode';
 
-  final Rx<ThemeMode> themeMode = ThemeMode.system.obs;
+  final Rx<ThemeMode> themeMode = ThemeMode.light.obs;
 
   @override
   void onInit() {
@@ -17,8 +17,10 @@ class ThemeModeController extends GetxController {
         themeMode.value = ThemeMode.light;
       case 'dark':
         themeMode.value = ThemeMode.dark;
-      default:
+      case 'system':
         themeMode.value = ThemeMode.system;
+      default:
+        themeMode.value = ThemeMode.light;
     }
   }
 

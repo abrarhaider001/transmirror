@@ -10,30 +10,36 @@ class MyTextTheme {
 
   static final String? _font = GoogleFonts.poppins().fontFamily;
 
-  /// Shared light [ColorScheme] (see [MyAppTheme.lightTheme] in `theme.dart`).
+  /// Light: white scaffold, black text, grey secondary — reference (ChatGPT light).
   static final ColorScheme lightColorScheme = ColorScheme.light(
     primary: MyColors.primary,
     onPrimary: MyColors.white,
     secondary: MyColors.secondary,
     onSecondary: MyColors.white,
-    surface: MyColors.white,
+    tertiary: MyColors.tertiary,
+    onTertiary: MyColors.white,
+    surface: MyColors.scaffoldLight,
     onSurface: MyColors.textPrimary,
-    onSurfaceVariant: MyColors.textSecondary,
+    onSurfaceVariant: MyColors.textMutedLight,
     error: MyColors.error,
-    outline: MyColors.grey10,
+    outline: MyColors.borderLight,
+  ).copyWith(
+    surfaceContainerHighest: MyColors.surfaceGroupedLight,
   );
 
-  /// Shared dark [ColorScheme] (see `theme.dart`).
+  /// Dark: black scaffold, white text, grey surfaces — reference (ChatGPT dark).
   static final ColorScheme darkColorScheme = ColorScheme.dark(
-    primary: MyColors.darkLink,
+    primary: MyColors.secondary,
     onPrimary: MyColors.white,
     secondary: MyColors.secondary,
     onSecondary: MyColors.white,
-    surface: MyColors.darkSurface,
-    onSurface: MyColors.darkOnBackground,
-    onSurfaceVariant: MyColors.darkOnSurfaceMuted,
+    surface: MyColors.scaffoldDark,
+    onSurface: MyColors.darkOnSurface,
+    onSurfaceVariant: MyColors.textMutedDark,
     error: MyColors.error,
-    outline: MyColors.darkOutline,
+    outline: MyColors.borderDark,
+  ).copyWith(
+    surfaceContainerHighest: MyColors.surfaceElevatedDark,
   );
 
   /// Builds a [TextTheme] whose colors come from [scheme] (primary vs muted vs links).
@@ -41,8 +47,8 @@ class MyTextTheme {
     final onSurface = scheme.onSurface;
     final muted = scheme.onSurfaceVariant;
     final link = scheme.brightness == Brightness.dark
-        ? MyColors.darkLink
-        : MyColors.lightLink;
+        ? scheme.onSurface
+        : MyColors.primary;
 
     TextStyle base({
       required double fontSize,
@@ -99,7 +105,7 @@ class MyTextTheme {
       titleSmall: base(fontSize: 12, weight: FontWeight.w600, color: muted),
       bodyLarge: base(fontSize: 14, color: onSurface),
       bodyMedium: base(fontSize: 14, color: muted),
-      bodySmall: base(fontSize: 12, color: muted.withValues(alpha: 0.9)),
+      bodySmall: base(fontSize: 12, color: muted.withValues(alpha: 0.95)),
       labelLarge: base(fontSize: 14, weight: FontWeight.w600, color: link),
       labelMedium: base(fontSize: 12, weight: FontWeight.w500, color: muted),
       labelSmall: base(fontSize: 11, color: muted),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
 
-/// Full-screen auth background only — do not use on non-auth routes.
+/// Full-screen auth background — matches app scaffold / surface from [ThemeData].
 class AuthGradientBackground extends StatelessWidget {
   const AuthGradientBackground({super.key, required this.child});
 
@@ -9,13 +8,9 @@ class AuthGradientBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: MyColors.authBackgroundGradient,
-        ),
-        child: child,
-      ),
+    return ColoredBox(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: child,
     );
   }
 }

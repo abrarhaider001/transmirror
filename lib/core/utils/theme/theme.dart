@@ -6,6 +6,7 @@ import 'widget_themes/elevated_button_theme.dart';
 import 'widget_themes/outlined_button_theme.dart';
 import 'widget_themes/text_field_theme.dart';
 import 'widget_themes/text_theme.dart';
+import '../constants/sizes.dart';
 
 /// Application themes — all component styles live under [lib/core/utils/theme].
 class MyAppTheme {
@@ -14,32 +15,38 @@ class MyAppTheme {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
-    scaffoldBackgroundColor: MyColors.primaryBackground,
+    scaffoldBackgroundColor: MyColors.scaffoldLight,
     colorScheme: MyTextTheme.lightColorScheme,
     textTheme: MyTextTheme.fromColorScheme(MyTextTheme.lightColorScheme),
     appBarTheme: MyAppBarTheme.lightAppBarTheme,
     elevatedButtonTheme: MyElevatedButtonTheme.lightElevatedButtonTheme,
     outlinedButtonTheme: MyOutlinedButtonTheme.lightOutlinedButtonTheme,
     inputDecorationTheme: MyTextFormFieldTheme.lightInputDecorationTheme,
-    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-      backgroundColor: MyColors.primary,
-      selectedItemColor: MyColors.white,
-      unselectedItemColor: Color(0xFFCBD5E1),
-      elevation: 8,
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: MyColors.scaffoldLight,
+      selectedItemColor: MyColors.textPrimary,
+      unselectedItemColor: MyColors.textMutedLight,
+      elevation: 0,
       type: BottomNavigationBarType.fixed,
     ),
-    dividerTheme: const DividerThemeData(color: MyColors.grey10),
+    dividerTheme: const DividerThemeData(
+      color: MyColors.dividerLight,
+      thickness: 1,
+    ),
     cardTheme: CardThemeData(
-      color: MyColors.white,
+      color: MyColors.surfaceGroupedLight,
       elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(MySizes.cardRadiusLg),
+      ),
     ),
   );
 
   static ThemeData darkTheme = ThemeData(
     useMaterial3: true,
     brightness: Brightness.dark,
-    scaffoldBackgroundColor: MyColors.darkBackground,
+    scaffoldBackgroundColor: MyColors.scaffoldDark,
     colorScheme: MyTextTheme.darkColorScheme,
     textTheme: MyTextTheme.fromColorScheme(MyTextTheme.darkColorScheme),
     appBarTheme: MyAppBarTheme.darkAppBarTheme,
@@ -47,19 +54,22 @@ class MyAppTheme {
     outlinedButtonTheme: MyOutlinedButtonTheme.darkOutlinedButtonTheme,
     inputDecorationTheme: MyTextFormFieldTheme.darkInputDecorationTheme,
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: MyColors.darkSurface,
-      selectedItemColor: MyColors.darkLink,
-      unselectedItemColor: MyColors.darkOnSurfaceMuted,
-      elevation: 8,
+      backgroundColor: MyColors.scaffoldDark,
+      selectedItemColor: MyColors.white,
+      unselectedItemColor: MyColors.textMutedDark,
+      elevation: 0,
       type: BottomNavigationBarType.fixed,
     ),
-    dividerTheme: const DividerThemeData(color: MyColors.darkOutline),
+    dividerTheme: const DividerThemeData(
+      color: MyColors.dividerDark,
+      thickness: 1,
+    ),
     cardTheme: CardThemeData(
-      color: MyColors.darkSurfaceVariant,
+      color: MyColors.surfaceElevatedDark,
       elevation: 0,
+      margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: MyColors.darkOutline),
+        borderRadius: BorderRadius.circular(MySizes.cardRadiusLg),
       ),
     ),
   );

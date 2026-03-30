@@ -51,12 +51,13 @@ class MySizes {
   static const double productImageRadius = 16.0;
   static const double productItemHeight = 160.0;
 
-  // Input field
-  static const double inputFieldRadius = 16.0;
+  // Input field (ChatGPT-style pill)
+  static const double inputFieldRadius = 28.0;
+  static const double radiusPill = 28.0;
   static const double spaceBtwInputFields = 16.0;
 
-  // Card sizes
-  static const double cardRadiusLg = 16.0;
+  // Card sizes (grouped tiles / settings)
+  static const double cardRadiusLg = 20.0;
   static const double cardRadiusM = 14.0;
   static const double cardRadiusMd = 12.0;
   static const double cardRadiusSm = 10.0;

@@ -8,8 +8,11 @@ class MyAppBarTheme {
 
   static const lightAppBarTheme = AppBarTheme(
     elevation: 0,
+    scrolledUnderElevation: 0,
     centerTitle: true,
-    backgroundColor: MyColors.primaryBackground,
+    backgroundColor: MyColors.scaffoldLight,
+    surfaceTintColor: Colors.transparent,
+    foregroundColor: MyColors.textPrimary,
     iconTheme: IconThemeData(color: MyColors.textPrimary, size: 18.0),
     actionsIconTheme: IconThemeData(color: MyColors.textPrimary, size: 18.0),
     systemOverlayStyle: SystemUiOverlayStyle(
@@ -21,11 +24,13 @@ class MyAppBarTheme {
 
   static const darkAppBarTheme = AppBarTheme(
     elevation: 0,
+    scrolledUnderElevation: 0,
     centerTitle: true,
-    backgroundColor: MyColors.darkBackground,
-    foregroundColor: MyColors.darkOnBackground,
-    iconTheme: IconThemeData(color: MyColors.darkOnBackground, size: 18.0),
-    actionsIconTheme: IconThemeData(color: MyColors.darkOnBackground, size: 18.0),
+    backgroundColor: MyColors.scaffoldDark,
+    surfaceTintColor: Colors.transparent,
+    foregroundColor: MyColors.white,
+    iconTheme: IconThemeData(color: MyColors.white, size: 18.0),
+    actionsIconTheme: IconThemeData(color: MyColors.white, size: 18.0),
     systemOverlayStyle: SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
       statusBarIconBrightness: Brightness.light,

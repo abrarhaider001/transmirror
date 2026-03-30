@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
 
 class CustomBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -21,25 +20,21 @@ class CustomBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final cs = Theme.of(context).colorScheme;
 
-    final bg = backgroundColor ??
-        (isDark ? MyColors.darkSurface : MyColors.primary);
-    final selected = selectedItemColor ?? (isDark ? MyColors.darkLink : MyColors.white);
-    final unselected =
-        unselectedItemColor ?? (isDark ? MyColors.darkOnSurfaceMuted : const Color(0xFFCBD5E1));
+    final bg = backgroundColor ?? cs.surface;
+    final selected = selectedItemColor ?? cs.onSurface;
+    final unselected = unselectedItemColor ?? cs.onSurfaceVariant;
 
     return Container(
       decoration: BoxDecoration(
         color: bg,
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x1F000000),
-            offset: Offset(0, -4),
-            blurRadius: 12,
-            spreadRadius: 0,
+        border: Border(
+          top: BorderSide(
+            color: cs.outline.withValues(alpha: 0.35),
+            width: 1,
           ),
-        ],
+        ),
       ),
       child: SafeArea(
         child: Padding(
@@ -97,8 +92,9 @@ class CustomBottomNavBar extends StatelessWidget {
                                 style: TextStyle(
                                   color: color,
                                   fontSize: 12,
-                                  fontWeight:
-                                      isSelected ? FontWeight.w600 : FontWeight.w500,
+                                  fontWeight: isSelected
+                                      ? FontWeight.w600
+                                      : FontWeight.w500,
                                 ),
                               ),
                             ],

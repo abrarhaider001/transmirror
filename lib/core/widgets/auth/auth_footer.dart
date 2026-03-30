@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
 import 'package:transmirror/core/utils/constants/sizes.dart';
 
 class AuthFooter extends StatelessWidget {
@@ -17,15 +16,15 @@ class AuthFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     final baseStyle = GoogleFonts.poppins(
       fontSize: MySizes.fontSizeXs,
-      // fontWeight: FontWeight.w600,
-      color: MyColors.white,
+      color: cs.onSurfaceVariant,
     );
     final actionStyle = GoogleFonts.poppins(
       fontSize: MySizes.fontSizeXs,
       fontWeight: FontWeight.w600,
-      color: MyColors.darkLink,
+      color: cs.primary,
     );
 
     return Row(
