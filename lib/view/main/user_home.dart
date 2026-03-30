@@ -8,9 +8,9 @@ import 'package:transmirror/core/utils/local_storage/storage_utility.dart';
 import 'package:transmirror/core/widgets/main/home/duo_mode_placeholder.dart';
 import 'package:transmirror/core/widgets/main/home/home_feature_tile.dart';
 import 'package:transmirror/core/widgets/main/home/home_header.dart';
-import 'package:transmirror/core/widgets/main/home/home_mode_toggle.dart';
 import 'package:transmirror/model/user_model.dart';
 import 'package:transmirror/view_model/home_mode_controller.dart';
+import 'package:transmirror/view_model/navbar_controller.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -46,89 +46,86 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              HomeHeader(name: name),
-              const SizedBox(height: 20),
               Obx(
-                () => HomeModeToggle(
-                  selected: modeController.mode.value,
-                  onChanged: modeController.setMode,
+                () => HomeHeader(
+                  name: name,
+                  selectedMode: modeController.mode.value,
+                  onModeChanged: modeController.setMode,
+                  onMenuTap: () {
+                    if (Get.isRegistered<NavbarController>()) {
+                      Get.find<NavbarController>().changeIndex(1);
+                    }
+                  },
                 ),
               ),
               const SizedBox(height: 20),
               Expanded(
-                child: Obx(() {
-                  if (modeController.mode.value == AppMode.duo) {
-                    return const DuoModePlaceholder();
-                  }
-                  return GridView.count(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.82,
-                    children: [
-                      HomeFeatureTile(
-                        title: 'Text Note',
-                        subtitle: 'Write and save notes instantly',
-                        icon: Iconsax.note,
-                        gradientColors: const [
-                          Color(0xFF8FA87A),
-                          Color(0xFF6B7F5C),
-                        ],
-                        accentGlow: const Color(0xFF8FA87A),
-                        onTap: () => Get.toNamed(AppRoutes.textNote),
-                      ),
-                      HomeFeatureTile(
-                        title: 'Text to Speech',
-                        subtitle: 'Turn text into clear, natural voice',
-                        icon: Iconsax.text,
-                        gradientColors: const [
-                          Color(0xFF7BA8FF),
-                          Color(0xFF4F7FD4),
-                        ],
-                        accentGlow: const Color(0xFF6B9BFA),
-                        onTap: () => Get.toNamed(AppRoutes.textToSpeech),
-                      ),
-                      HomeFeatureTile(
-                        title: 'Speech to Text',
-                        subtitle: 'Speak and convert voice to text',
-                        icon: Iconsax.voice_square,
-                        gradientColors: const [
-                          Color(0xFFA78BFA),
-                          Color(0xFF7C3AED),
-                        ],
-                        accentGlow: const Color(0xFF8B5CF6),
-                        onTap: () => Get.toNamed(AppRoutes.speechToText),
-                      ),
-                      HomeFeatureTile(
-                        title: 'Document Viewer',
-                        subtitle: 'Open and view your files and documents',
-                        icon: Iconsax.document,
-                        gradientColors: const [
-                          Color(0xFF2DD4BF),
-                          Color(0xFF0D9488),
-                        ],
-                        accentGlow: const Color(0xFF14B8A6),
-                        onTap: () => Get.toNamed(AppRoutes.aiResponse),
-                      ),
-                      HomeFeatureTile(
-                        title: 'Extract Text',
-                        subtitle: 'Extract text from photos or gallery',
-                        icon: Iconsax.scan,
-                        gradientColors: const [
-                          Color(0xFFFBBF24),
-                          Color(0xFFEA580C),
-                        ],
-                        accentGlow: const Color(0xFFF59E0B),
-                        onTap: () => Get.toNamed(AppRoutes.imageSelection),
-                      ),
-                    ],
-                  );
-                }),
+                child: Obx(
+                  () => AnimatedSwitcher(
+                    duration: Duration.zero,
+                    switchInCurve: Curves.easeOut,
+                    switchOutCurve: Curves.easeIn,
+                    child: modeController.mode.value == AppMode.duo
+                        ? const DuoModePlaceholder(key: ValueKey('duo'))
+                        : const _SoloGrid(key: ValueKey('solo')),
+                  ),
+                ),
               ),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SoloGrid extends StatelessWidget {
+  const _SoloGrid({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 2,
+      crossAxisSpacing: 16,
+      mainAxisSpacing: 16,
+      childAspectRatio: 0.82,
+      children: [
+        HomeFeatureTile(
+          key: const ValueKey('text_note'),
+          title: 'Text Note',
+          subtitle: 'Write and save notes instantly',
+          icon: Iconsax.note,
+          onTap: () => Get.toNamed(AppRoutes.textNote),
+        ),
+        HomeFeatureTile(
+          key: const ValueKey('text_to_speech'),
+          title: 'Text to Speech',
+          subtitle: 'Turn text into clear, natural voice',
+          icon: Iconsax.text,
+          onTap: () => Get.toNamed(AppRoutes.textToSpeech),
+        ),
+        HomeFeatureTile(
+          key: const ValueKey('speech_to_text'),
+          title: 'Speech to Text',
+          subtitle: 'Speak and convert voice to text',
+          icon: Iconsax.voice_square,
+          onTap: () => Get.toNamed(AppRoutes.speechToText),
+        ),
+        HomeFeatureTile(
+          key: const ValueKey('doc_viewer'),
+          title: 'Document Viewer',
+          subtitle: 'Open and view your files and documents',
+          icon: Iconsax.document,
+          onTap: () => Get.toNamed(AppRoutes.aiResponse),
+        ),
+        HomeFeatureTile(
+          key: const ValueKey('extract_text'),
+          title: 'Extract Text',
+          subtitle: 'Extract text from photos or gallery',
+          icon: Iconsax.scan,
+          onTap: () => Get.toNamed(AppRoutes.imageSelection),
+        ),
+      ],
     );
   }
 }
