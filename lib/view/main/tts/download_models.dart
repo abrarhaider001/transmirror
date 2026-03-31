@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/utils/constants/sizes.dart';
 import 'package:transmirror/core/utils/popups/app_snackbar.dart';
+import 'package:transmirror/core/utils/theme/widget_themes/text_field_theme.dart';
+import 'package:transmirror/core/utils/translate_language_country_code.dart';
 import 'package:transmirror/core/widgets/layout_app_bar.dart';
+import 'package:transmirror/core/widgets/main/stt/circular_country_flag.dart';
 
 class DownloadModelsPage extends StatefulWidget {
   const DownloadModelsPage({super.key});
@@ -19,7 +22,7 @@ class _DownloadModelsPageState extends State<DownloadModelsPage> {
   final Set<String> _downloadedModels = {};
   final Set<String> _downloadingModels = {};
   final List<TranslateLanguage> _languages = TranslateLanguage.values;
-  
+
   final TextEditingController _searchController = TextEditingController();
   List<TranslateLanguage> _filteredLanguages = [];
 
@@ -105,31 +108,41 @@ class _DownloadModelsPageState extends State<DownloadModelsPage> {
 
   Future<void> _deleteModel(TranslateLanguage language) async {
     final code = language.bcpCode;
-    
-    // Show confirmation dialog
+
+    final cs = Theme.of(context).colorScheme;
     final bool? confirm = await Get.dialog<bool>(
       AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text(
+        backgroundColor: cs.surface,
+        title: Text(
           'Delete Model',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                color: cs.onSurface,
+              ),
         ),
         content: Text(
           'Are you sure you want to delete the ${_getLanguageName(language)} translation model?',
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: cs.onSurfaceVariant,
+              ),
         ),
         actions: [
           TextButton(
             onPressed: () => Get.back(result: false),
-            child: const Text(
+            child: Text(
               'Cancel',
-              style: TextStyle(color: MyColors.textSecondary),
+              style: TextStyle(color: cs.onSurfaceVariant),
             ),
           ),
           TextButton(
             onPressed: () => Get.back(result: true),
-            child: const Text(
+            child: Text(
               'Delete',
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: cs.error,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
         ],
@@ -161,29 +174,40 @@ class _DownloadModelsPageState extends State<DownloadModelsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final fieldStyle = TextStyle(
+      color: cs.onSurface,
+      fontSize: 14,
+    );
+    final iconColor = cs.onSurfaceVariant;
+
     return Scaffold(
-      backgroundColor: MyColors.softGrey,
+      backgroundColor: cs.surface,
       body: SafeArea(
         child: Column(
           children: [
-            const LayoutPagesAppBar(title: 'Download Models', showTrailing: false),
-            
-            // Search Field
+            const LayoutPagesAppBar(
+              title: 'Download Models',
+              showTrailing: false,
+            ),
+
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(
+                horizontal: MySizes.defaultPagePadding,
+                vertical: 10,
+              ),
               child: TextField(
                 controller: _searchController,
-                decoration: InputDecoration(
+                style: fieldStyle,
+                decoration: MyTextFormFieldTheme.compactInputDecoration(
+                  context,
                   hintText: 'Search model...',
-                  hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
-                  prefixIcon: const Icon(Iconsax.search_normal, color: Colors.grey,),
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                  prefixIcon: Icon(
+                    Iconsax.search_normal,
+                    color: iconColor,
+                    size: MySizes.iconSm,
                   ),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
               ),
             ),
@@ -191,85 +215,117 @@ class _DownloadModelsPageState extends State<DownloadModelsPage> {
             Expanded(
               child: Scrollbar(
                 thumbVisibility: true,
-                child: ListView.builder(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                  itemCount: _filteredLanguages.length,
-                  itemBuilder: (context, index) {
-                    final language = _filteredLanguages[index];
-                    final isDownloaded = _downloadedModels.contains(
-                      language.bcpCode,
-                    );
-                    final isDownloading = _downloadingModels.contains(
-                      language.bcpCode,
-                    );
-
-                    return Container(
-                      margin: const EdgeInsets.only(bottom: 1),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 16,
+                child: ListView(
+                  padding: const EdgeInsets.fromLTRB(
+                    MySizes.defaultPagePadding,
+                    0,
+                    MySizes.defaultPagePadding,
+                    8,
+                  ),
+                  children: [
+                    if (_filteredLanguages.isEmpty)
+                      const SizedBox.shrink()
+                    else
+                      Material(
+                        color: cs.surfaceContainerHighest.withValues(
+                          alpha: 0.55,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            for (var i = 0;
+                                i < _filteredLanguages.length;
+                                i++) ...[
+                              if (i > 0)
+                                Divider(
+                                  height: 1,
+                                  thickness: 1,
+                                  color: cs.outline,
+                                ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 14,
+                                ),
+                                child: Row(
+                                  children: [
+                                    CircularCountryFlag(
+                                      countryCode:
+                                          countryCodeForTranslateLanguage(
+                                        _filteredLanguages[i],
+                                      ),
+                                      size: 30,
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Text(
+                                        _getLanguageName(
+                                          _filteredLanguages[i],
+                                        ),
+                                        style: theme.textTheme.bodyLarge
+                                            ?.copyWith(
+                                          color: cs.onSurface,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    _buildTrailingAction(
+                                      context,
+                                      _filteredLanguages[i],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        // borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.02),
-                            blurRadius: 10,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              _getLanguageName(language),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: MyColors.textPrimary,
-                              ),
-                            ),
-                          ),
-                          if (isDownloading)
-                            const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2,
-                                color: MyColors.primary,
-                              ),
-                            )
-                          else if (isDownloaded)
-                            GestureDetector(
-                              onTap: () => _deleteModel(
-                                language,
-                              ), // Optional: Allow deletion
-                              child: const Icon(
-                                Iconsax.trash,
-                                color: Colors.red,
-                                size: 24,
-                              ),
-                            )
-                          else
-                            GestureDetector(
-                              onTap: () => _downloadModel(language),
-                              child: const Icon(
-                                Iconsax.document_download,
-                                color: MyColors.primary,
-                                size: 24,
-                              ),
-                            ),
-                        ],
-                      ),
-                    );
-                  },
+                  ],
                 ),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTrailingAction(
+    BuildContext context,
+    TranslateLanguage language,
+  ) {
+    final cs = Theme.of(context).colorScheme;
+    final isDownloaded = _downloadedModels.contains(language.bcpCode);
+    final isDownloading = _downloadingModels.contains(language.bcpCode);
+
+    if (isDownloading) {
+      return SizedBox(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(
+          strokeWidth: 2,
+          color: cs.primary,
+        ),
+      );
+    }
+    if (isDownloaded) {
+      return GestureDetector(
+        onTap: () => _deleteModel(language),
+        child: Icon(
+          Iconsax.trash,
+          color: cs.error,
+          size: 24,
+        ),
+      );
+    }
+    return GestureDetector(
+      onTap: () => _downloadModel(language),
+      child: Icon(
+        Iconsax.document_download,
+        color: cs.primary,
+        size: 24,
       ),
     );
   }

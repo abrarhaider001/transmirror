@@ -1,7 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/widgets/auth/auth_top_bar.dart';
 
 class LayoutPagesAppBar extends StatelessWidget {
   final String title;
@@ -21,6 +20,7 @@ class LayoutPagesAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const double slot = 44;
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Stack(
@@ -30,30 +30,20 @@ class LayoutPagesAppBar extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               if (showBack)
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(color: MyColors.white, borderRadius: BorderRadius.circular(20)),
-                    child: const Icon(Iconsax.arrow_left, color: MyColors.primary),
-                  ),
+                AuthCircularIconButton(
+                  icon: Iconsax.arrow_left,
+                  onPressed: () => Navigator.pop(context),
                 )
               else
-                const SizedBox(width: 40, height: 40),
-              
+                const SizedBox(width: slot, height: slot),
               if (showTrailing)
-                GestureDetector(
-                  onTap: onTrailingPressed,
-                  child: trailingWidget ?? Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(color: MyColors.white, borderRadius: BorderRadius.circular(20)),
-                    child: const Icon(Iconsax.notification, color: MyColors.primary),
-                  ),
-                )
+                trailingWidget ??
+                    AuthCircularIconButton(
+                      icon: Iconsax.notification,
+                      onPressed: onTrailingPressed,
+                    )
               else
-                 const SizedBox(width: 40, height: 40),
+                const SizedBox(width: slot, height: slot),
             ],
           ),
           Padding(

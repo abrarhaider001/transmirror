@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:transmirror/core/utils/translate_language_country_code.dart';
+import 'package:transmirror/core/widgets/main/stt/circular_country_flag.dart';
 
 class LanguagePickerChip extends StatelessWidget {
   final TranslateLanguage selectedLanguage;
@@ -183,6 +185,11 @@ class _LanguageSelectionSheetState extends State<_LanguageSelectionSheet> {
                 final isSelected = lang == widget.selectedLanguage;
 
                 return ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                  leading: CircularCountryFlag(
+                    countryCode: countryCodeForTranslateLanguage(lang),
+                    size: 28,
+                  ),
                   onTap: () {
                     widget.onLanguageSelected(lang);
                     Navigator.pop(context);

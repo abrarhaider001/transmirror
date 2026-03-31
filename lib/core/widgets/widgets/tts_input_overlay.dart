@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:transmirror/core/utils/translate_language_country_code.dart';
+import 'package:transmirror/core/widgets/main/stt/circular_country_flag.dart';
 import 'package:transmirror/core/widgets/widgets/language_picker_chip.dart';
 
 class TTSInputOverlay extends StatelessWidget {
@@ -50,12 +52,22 @@ class TTSInputOverlay extends StatelessWidget {
                         ),
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 5),
-                          child: Icon(Iconsax.arrow_right_1, color: MyColors.secondary, size: 16),
+                          child: Icon(
+                            Iconsax.arrow_right_1,
+                            color: MyColors.secondary,
+                            size: 16,
+                          ),
                         ),
                         LanguagePickerChip(
                           label: 'To',
                           selectedLanguage: targetLanguage,
                           onLanguageChanged: onTargetChanged,
+                          leading: CircularCountryFlag(
+                            countryCode: countryCodeForTranslateLanguage(
+                              targetLanguage,
+                            ),
+                            size: 26,
+                          ),
                         ),
                       ],
                     )
@@ -63,6 +75,12 @@ class TTSInputOverlay extends StatelessWidget {
                       child: LanguagePickerChip(
                         selectedLanguage: sourceLanguage,
                         onLanguageChanged: onSourceChanged,
+                        leading: CircularCountryFlag(
+                          countryCode: countryCodeForTranslateLanguage(
+                            sourceLanguage,
+                          ),
+                          size: 26,
+                        ),
                       ),
                     ),
             ),
@@ -70,7 +88,9 @@ class TTSInputOverlay extends StatelessWidget {
 
           // Right: Control Button
           _buildControlButton(
-            onTap: isPlaying ? onStopPressed : (isProcessing ? null : onActionPressed),
+            onTap: isPlaying
+                ? onStopPressed
+                : (isProcessing ? null : onActionPressed),
             icon: isPlaying ? Iconsax.stop : Iconsax.play,
             color: isPlaying ? Colors.red : MyColors.primary,
             isProcessing: isProcessing,
@@ -102,21 +122,20 @@ class TTSInputOverlay extends StatelessWidget {
             ),
           ],
         ),
-child: isPlaying
-    ? Icon(Iconsax.stop, color: Colors.white, size: 20)
-    : isProcessing
-        ? const Center(
-            child: SizedBox(
-              height: 20,
-              width: 20,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            ),
-          )
-        : Icon(Iconsax.volume_high, color: Colors.white, size: 20),
-
+        child: isPlaying
+            ? Icon(Iconsax.stop, color: Colors.white, size: 20)
+            : isProcessing
+            ? const Center(
+                child: SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
+                ),
+              )
+            : Icon(Iconsax.volume_high, color: Colors.white, size: 20),
       ),
     );
   }
