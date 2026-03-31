@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:get/get.dart';
 import 'package:google_mlkit_translation/google_mlkit_translation.dart';
-import 'package:transmirror/core/utils/constants/colors.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:transmirror/core/utils/constants/sizes.dart';
 import 'package:transmirror/core/utils/popups/app_snackbar.dart';
-import 'package:transmirror/core/widgets/layout_app_bar.dart';
+import 'package:transmirror/core/widgets/main/stt/stt_rounded_card.dart';
+import 'package:transmirror/core/widgets/main/stt/stt_translate_app_bar.dart';
 import 'package:transmirror/core/widgets/widgets/tts_input_overlay.dart';
 import 'package:transmirror/core/widgets/widgets/tts_mode_selector.dart';
 
@@ -19,7 +21,6 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
   final FlutterTts _flutterTts = FlutterTts();
   String? _currentlyPlayingLanguage;
 
-  // Translation related
   final TextEditingController _customTextController = TextEditingController();
   bool _isProcessing = false;
 
@@ -27,8 +28,11 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
   TranslateLanguage _selectedTargetLanguage = TranslateLanguage.urdu;
   TranslateLanguage _selectedSourceLanguage = TranslateLanguage.english;
   OnDeviceTranslator? _customTranslator;
-  final OnDeviceTranslatorModelManager _modelManager = OnDeviceTranslatorModelManager();
-  
+  final OnDeviceTranslatorModelManager _modelManager =
+      OnDeviceTranslatorModelManager();
+
+  static const double _cardRadius = 26;
+
   @override
   void initState() {
     super.initState();
@@ -40,45 +44,40 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
     final args = Get.arguments;
     if (args is Map) {
       if (args['text'] != null) {
-        _customTextController.text = args['text'];
+        _customTextController.text = args['text'] as String;
       }
       if (args['detectedLanguage'] != null) {
-        _trySetSourceLanguage(args['detectedLanguage']);
+        _trySetSourceLanguage(args['detectedLanguage'] as String);
       }
     }
   }
 
   void _trySetSourceLanguage(String langCode) {
-     // Try to find matching TranslateLanguage
-     try {
-       // Check against bcpCode or name
-       final matched = TranslateLanguage.values.firstWhere(
-         (l) => l.bcpCode == langCode || l.name.toLowerCase() == langCode.toLowerCase(), 
-         orElse: () => TranslateLanguage.english
-       );
-       // If we found a match (and it wasn't just the default 'english' fallback unless the input was actually english)
-       // Actually firstWhere with orElse returns english if not found.
-       // We can check if langCode matches english properties.
-       
-       bool isEnglish = langCode == 'en' || langCode.toLowerCase() == 'english';
-       if (matched != TranslateLanguage.english || isEnglish) {
-          setState(() {
-            _selectedSourceLanguage = matched;
-          });
-       }
-     } catch (_) {}
+    try {
+      final matched = TranslateLanguage.values.firstWhere(
+        (l) =>
+            l.bcpCode == langCode ||
+            l.name.toLowerCase() == langCode.toLowerCase(),
+        orElse: () => TranslateLanguage.english,
+      );
+
+      final isEnglish = langCode == 'en' || langCode.toLowerCase() == 'english';
+      if (matched != TranslateLanguage.english || isEnglish) {
+        setState(() {
+          _selectedSourceLanguage = matched;
+        });
+      }
+    } catch (_) {}
   }
 
   Future<void> _initTts() async {
     await _flutterTts.setSharedInstance(true);
-    await _flutterTts.setIosAudioCategory(
-        IosTextToSpeechAudioCategory.ambient,
-        [
+    await _flutterTts
+        .setIosAudioCategory(IosTextToSpeechAudioCategory.ambient, [
           IosTextToSpeechAudioCategoryOptions.allowBluetooth,
           IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
-          IosTextToSpeechAudioCategoryOptions.mixWithOthers
-        ],
-        IosTextToSpeechAudioMode.voicePrompt);
+          IosTextToSpeechAudioCategoryOptions.mixWithOthers,
+        ], IosTextToSpeechAudioMode.voicePrompt);
     await _flutterTts.awaitSpeakCompletion(true);
     await _flutterTts.setVolume(1.0);
     await _flutterTts.setSpeechRate(0.5);
@@ -102,7 +101,6 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
   }
 
   Future<void> _speak(String text, String languageCode) async {
-    // If currently playing this language, stop it
     if (_currentlyPlayingLanguage == languageCode) {
       await _flutterTts.stop();
       setState(() {
@@ -111,14 +109,12 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
       return;
     }
 
-    // Stop any other playing
     await _flutterTts.stop();
 
     setState(() {
       _currentlyPlayingLanguage = languageCode;
     });
 
-    // Try to map language code if possible, else rely on BCP code
     await _flutterTts.setLanguage(languageCode);
     await _flutterTts.speak(text);
   }
@@ -126,7 +122,6 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
   Future<void> _handleCustomAction() async {
     if (_customTextController.text.trim().isEmpty) return;
 
-    // Hide keyboard
     FocusScope.of(context).unfocus();
 
     setState(() {
@@ -141,9 +136,12 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
         final sourceLang = _selectedSourceLanguage;
         final targetLang = _selectedTargetLanguage;
 
-        // Check downloads
-        final bool sourceDownloaded = await _modelManager.isModelDownloaded(sourceLang.bcpCode);
-        final bool targetDownloaded = await _modelManager.isModelDownloaded(targetLang.bcpCode);
+        final bool sourceDownloaded = await _modelManager.isModelDownloaded(
+          sourceLang.bcpCode,
+        );
+        final bool targetDownloaded = await _modelManager.isModelDownloaded(
+          targetLang.bcpCode,
+        );
 
         if (!sourceDownloaded) {
           await _modelManager.downloadModel(sourceLang.bcpCode);
@@ -152,15 +150,16 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
           await _modelManager.downloadModel(targetLang.bcpCode);
         }
 
-        // Create translator if needed
         _customTranslator?.close();
         _customTranslator = OnDeviceTranslator(
           sourceLanguage: sourceLang,
           targetLanguage: targetLang,
         );
 
-        textToSpeak = await _customTranslator!.translateText(_customTextController.text);
-        languageCode = targetLang.bcpCode; // Use BCP code for TTS
+        textToSpeak = await _customTranslator!.translateText(
+          _customTextController.text,
+        );
+        languageCode = targetLang.bcpCode;
       }
 
       await _speak(textToSpeak, languageCode);
@@ -178,6 +177,12 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
     }
   }
 
+  void _shareTypedText() {
+    final t = _customTextController.text.trim();
+    if (t.isEmpty) return;
+    Share.share(t);
+  }
+
   @override
   void dispose() {
     _flutterTts.stop();
@@ -188,74 +193,78 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+
     return Scaffold(
-      backgroundColor: MyColors.softGrey,
+      backgroundColor: cs.surface,
       body: SafeArea(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            //Appbar
-            LayoutPagesAppBar(
+            SttTranslateAppBar(
               title: 'Text to Speech',
+              onBack: () => Navigator.of(context).pop(),
+              onShare: _shareTypedText,
             ),
-            
-            // Mode Selector
             TTSModeSelector(
               isTranslateMode: _isTranslateMode,
               onModeChanged: (val) {
                 setState(() => _isTranslateMode = val);
               },
             ),
-        
-            // Input Area with Overlay
             Expanded(
-              child: Container(
-                margin: const EdgeInsets.fromLTRB(20, 10, 20, 20),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: MyColors.primary.withOpacity(0.1),
-                      blurRadius: 15,
-                      offset: const Offset(0, 8),
-                    ),
-                  ],
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  MySizes.defaultPagePadding,
+                  4,
+                  MySizes.defaultPagePadding,
+                  MySizes.lg,
                 ),
-                child: Stack(
-                  children: [
-                    TextField(
-                      controller: _customTextController,
-                      decoration: const InputDecoration(
-                        hintText: 'Type something to speak...',
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        focusedBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        focusedErrorBorder: InputBorder.none,
-                        contentPadding: EdgeInsets.fromLTRB(20, 24, 20, 100),
-                        hintStyle: TextStyle(fontSize: 14, color: Colors.grey),
+                child: SttRoundedCard(
+                  radius: _cardRadius,
+                  padding: EdgeInsets.zero,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: _customTextController,
+                          maxLines: null,
+                          expands: true,
+                          textAlignVertical: TextAlignVertical.top,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: cs.onSurface,
+                            height: 1.45,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          decoration: InputDecoration(
+                            hintText: 'Type something to speak...',
+                            hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                              color: cs.onSurfaceVariant.withOpacity(0.85),
+                            ),
+                            filled: true,
+                            fillColor: Colors.transparent,
+                            border: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            contentPadding: const EdgeInsets.fromLTRB(
+                              18,
+                              20,
+                              18,
+                              12,
+                            ),
+                          ),
+                        ),
                       ),
-                      maxLines: null,
-                      expands: true,
-                      textAlignVertical: TextAlignVertical.top,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        height: 1.5,
-                        color: MyColors.primary,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: TTSInputOverlay(
+                      TTSInputOverlay(
                         isTranslateMode: _isTranslateMode,
                         sourceLanguage: _selectedSourceLanguage,
                         targetLanguage: _selectedTargetLanguage,
-                        onSourceChanged: (val) => setState(() => _selectedSourceLanguage = val),
-                        onTargetChanged: (val) => setState(() => _selectedTargetLanguage = val),
+                        onSourceChanged: (val) =>
+                            setState(() => _selectedSourceLanguage = val),
+                        onTargetChanged: (val) =>
+                            setState(() => _selectedTargetLanguage = val),
                         isPlaying: _currentlyPlayingLanguage != null,
                         isProcessing: _isProcessing,
                         onActionPressed: _handleCustomAction,
@@ -267,8 +276,8 @@ class _TextToSpeechPageState extends State<TextToSpeechPage> {
                           });
                         },
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

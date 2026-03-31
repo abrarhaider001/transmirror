@@ -10,6 +10,8 @@ class LanguagePickerChip extends StatelessWidget {
   final String label;
   /// Optional leading widget (e.g. circular flag) shown before the language name.
   final Widget? leading;
+  /// When set, caps displayed name length (suffix …) so chips stay compact next to controls.
+  final int? maxLanguageNameLength;
 
   const LanguagePickerChip({
     super.key,
@@ -17,11 +19,19 @@ class LanguagePickerChip extends StatelessWidget {
     required this.onLanguageChanged,
     this.label = '',
     this.leading,
+    this.maxLanguageNameLength,
   });
 
   String _getLanguageName(TranslateLanguage language) {
     String name = language.name.toLowerCase();
     return name[0].toUpperCase() + name.substring(1);
+  }
+
+  String _displayLanguageName(TranslateLanguage language) {
+    final full = _getLanguageName(language);
+    final maxLen = maxLanguageNameLength;
+    if (maxLen == null || full.length <= maxLen) return full;
+    return '${full.substring(0, maxLen)}…';
   }
 
   void _showLanguagePicker(BuildContext context) {
@@ -66,13 +76,14 @@ class LanguagePickerChip extends StatelessWidget {
             ],
             Flexible(
               child: Text(
-                _getLanguageName(selectedLanguage),
+                _displayLanguageName(selectedLanguage),
                 style: TextStyle(
                   color: cs.onSurface,
                   fontWeight: FontWeight.bold,
                   fontSize: 12,
                 ),
                 overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
             const SizedBox(width: 6),

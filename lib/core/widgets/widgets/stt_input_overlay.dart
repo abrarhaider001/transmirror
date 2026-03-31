@@ -58,7 +58,10 @@ class STTInputOverlay extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.red.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(12),
@@ -110,8 +113,15 @@ class STTInputOverlay extends StatelessWidget {
                               ],
                             ),
                             const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                              child: Icon(Iconsax.arrow_right_1, color: MyColors.secondary, size: 16),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 12,
+                              ),
+                              child: Icon(
+                                Iconsax.arrow_right_1,
+                                color: MyColors.secondary,
+                                size: 16,
+                              ),
                             ),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,7 +191,10 @@ class STTInputOverlay extends StatelessWidget {
                 child: SizedBox(
                   height: 20,
                   width: 20,
-                  child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                    strokeWidth: 2,
+                  ),
                 ),
               )
             : Icon(icon, color: Colors.white, size: 20),
